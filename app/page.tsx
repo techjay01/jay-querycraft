@@ -2,16 +2,12 @@
 'use client'
 
 import { useState, useCallback } from 'react'
-import { motion } from 'framer-motion'
 import ResultsPanel from '@/components/results/ResultsPanel'
 import {
   Database,
   Eye,
   History,
   Keyboard,
-  Moon,
-  Sun,
-  Layers,
 } from 'lucide-react'
 import { useQueryStore } from '@/store/queryStore'
 import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts'
@@ -22,24 +18,14 @@ import QueryPreview from '@/components/preview/QueryPreview'
 import QueryHistory from '@/components/history/QueryHistory'
 import SchemaSelector from '@/components/schema/SchemaSelector'
 import ClientOnly from '@/components/ui/ClientOnly'
+import ShortcutsPanel from '@/components/ui/ShortcutsPanel'
+import ThemeToggle from '@/components/ui/ThemeToggle'
 
 // ============================================
 // THEME CYCLE
 // ============================================
 
 const THEMES: ThemeMode[] = ['dark', 'blueprint', 'light']
-
-const THEME_ICONS = {
-  dark: <Moon size={14} />,
-  blueprint: <Layers size={14} />,
-  light: <Sun size={14} />,
-}
-
-const THEME_LABELS = {
-  dark: 'Circuit Dark',
-  blueprint: 'Blueprint',
-  light: 'Light',
-}
 
 // ============================================
 // PAGE
@@ -212,69 +198,16 @@ export default function Home() {
               </button>
 
               {/* Theme toggle */}
-              <button
-                onClick={handleToggleTheme}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded text-xs
-                  transition-all duration-200 hover:scale-105"
-                style={{
-                  background: 'var(--bg-secondary)',
-                  color: 'var(--text-secondary)',
-                  border: '1px solid var(--border-primary)',
-                }}
-                title="Toggle theme (Ctrl+Shift+T)"
-              >
-                {THEME_ICONS[theme]}
-                <span className="hidden sm:block">{THEME_LABELS[theme]}</span>
-              </button>
+              <ThemeToggle theme={theme} onToggle={handleToggleTheme} />
             </div>
           </div>
         </header>
 
-        {/* ── KEYBOARD SHORTCUTS PANEL */}
-        {showShortcuts && (
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            className="border-b"
-            style={{
-              background: 'var(--bg-secondary)',
-              borderColor: 'var(--border-primary)',
-            }}
-          >
-            <div className="max-w-screen-2xl mx-auto px-4 py-3 flex flex-wrap gap-4">
-              {[
-                { keys: ['Ctrl', 'Enter'], desc: 'Run query' },
-                { keys: ['Ctrl', '⇧', 'R'], desc: 'Reset query' },
-                { keys: ['Ctrl', '⇧', 'P'], desc: 'Toggle preview' },
-                { keys: ['Ctrl', '⇧', 'H'], desc: 'Toggle history' },
-                { keys: ['Ctrl', '⇧', 'T'], desc: 'Toggle theme' },
-              ].map(({ keys, desc }) => (
-                <div key={desc} className="flex items-center gap-2">
-                  <div className="flex items-center gap-1">
-                    {keys.map(k => (
-                      <kbd
-                        key={k}
-                        className="px-1.5 py-0.5 rounded text-xs font-mono"
-                        style={{
-                          background: 'var(--bg-tertiary)',
-                          border: '1px solid var(--border-primary)',
-                          color: 'var(--text-secondary)',
-                          fontSize: '10px',
-                        }}
-                      >
-                        {k}
-                      </kbd>
-                    ))}
-                  </div>
-                  <span className="text-xs" style={{ color: 'var(--text-muted)' }}>
-                    {desc}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </motion.div>
-        )}
+        {/* ── KEYBOARD SHORTCUTS MODAL */}
+        <ShortcutsPanel
+          isOpen={showShortcuts}
+          onClose={() => setShowShortcuts(false)}
+        />
 
         {/* ── MAIN CONTENT */}
         <main className="flex-1 max-w-screen-2xl mx-auto w-full px-4 py-6">
