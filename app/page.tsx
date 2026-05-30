@@ -3,6 +3,7 @@
 
 import { useState, useCallback } from 'react'
 import { motion } from 'framer-motion'
+import ResultsPanel from '@/components/results/ResultsPanel'
 import {
   Database,
   Eye,
@@ -319,6 +320,7 @@ export default function Home() {
             {(showPreview || showHistory) && (
               <div className="w-96 shrink-0 flex flex-col gap-4">
                 {showPreview && <QueryPreview />}
+                <ResultsPanel />
                 {showHistory && <QueryHistory />}
               </div>
             )}
