@@ -17,6 +17,9 @@ import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts'
 import { MOCK_SCHEMAS } from '@/lib/schemas'
 import { ThemeMode } from '@/types/query'
 import QueryBuilder from '@/components/builder/QueryBuilder'
+import QueryPreview from '@/components/preview/QueryPreview'
+import QueryHistory from '@/components/history/QueryHistory'
+import SchemaSelector from '@/components/schema/SchemaSelector'
 
 // ============================================
 // THEME CYCLE
@@ -274,6 +277,11 @@ export default function Home() {
       <main className="flex-1 max-w-screen-2xl mx-auto w-full px-4 py-6">
         <div className="flex gap-4 items-start">
 
+          {/* Left sidebar — schema selector */}
+          <div className="w-64 shrink-0">
+            <SchemaSelector />
+          </div>
+
           {/* Query builder panel */}
           <div className="flex-1 min-w-0">
             {/* Panel header */}
@@ -305,21 +313,11 @@ export default function Home() {
             <QueryBuilder />
           </div>
 
-          {/* Preview + History sidebar — coming in PR 5 & 6 */}
+          {/* Preview + History sidebar */}
           {(showPreview || showHistory) && (
             <div className="w-96 shrink-0 flex flex-col gap-4">
-              <div
-                className="rounded-lg border p-4 text-center"
-                style={{
-                  background: 'var(--bg-secondary)',
-                  borderColor: 'var(--border-primary)',
-                  color: 'var(--text-muted)',
-                }}
-              >
-                <p className="text-xs">
-                  Preview & History panels coming in next PRs
-                </p>
-              </div>
+              {showPreview && <QueryPreview />}
+              {showHistory && <QueryHistory />}
             </div>
           )}
         </div>
