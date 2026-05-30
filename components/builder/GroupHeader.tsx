@@ -11,7 +11,7 @@ import { clsx } from 'clsx'
 // ============================================
 
 interface GroupHeaderProps {
-  groupId: string
+  groupId?: string
   logicalOperator: LogicalOperator
   collapsed: boolean
   depth: number
@@ -42,7 +42,6 @@ const DEPTH_LABELS = ['Root', 'Group', 'Nested', 'Deep']
 // ============================================
 
 const GroupHeader = memo(({
-  groupId,
   logicalOperator,
   collapsed,
   depth,
@@ -181,10 +180,10 @@ const GroupHeader = memo(({
         )}
       </div>
 
-      {/* Invisible id anchor for accessibility */}
-      <span className="sr-only" id={`group-${groupId}`}>
+        {/* Accessible label */}
+        <span className="sr-only">
         {depthLabel} logical group using {logicalOperator}
-      </span>
+        </span>
     </div>
   )
 })
