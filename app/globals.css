@@ -328,3 +328,46 @@ body {
   0% { background-position: 200% 0; }
   100% { background-position: -200% 0; }
 }
+
+/* ============================================
+   FORM ELEMENTS — polished inputs and selects
+   ============================================ */
+
+input[type="text"],
+input[type="number"],
+input[type="date"],
+select {
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus,
+input[type="date"]:focus,
+select:focus {
+  border-color: var(--accent-primary) !important;
+  box-shadow: 0 0 0 2px rgba(0, 212, 255, 0.1) !important;
+  outline: none !important;
+}
+
+select option {
+  background: var(--bg-card);
+  color: var(--text-primary);
+}
+
+/* ============================================
+   PANEL TRANSITIONS
+   ============================================ */
+
+.panel-enter {
+  animation: fadeIn 0.2s ease forwards;
+}
+
+/* ============================================
+   RESPONSIVE HELPERS
+   ============================================ */
+
+@media (max-width: 768px) {
+  .circuit-bg {
+    background-size: 20px 20px;
+  }
+}
