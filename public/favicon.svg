@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
+  <!-- Background -->
+  <rect width="32" height="32" rx="8" fill="#0a0e1a"/>
+  <!-- Circuit border -->
+  <rect width="32" height="32" rx="8" fill="none" stroke="#00d4ff" stroke-width="1" opacity="0.4"/>
+  <!-- Database icon -->
+  <ellipse cx="16" cy="11" rx="7" ry="3" stroke="#00d4ff" stroke-width="1.5" fill="rgba(0,212,255,0.1)"/>
+  <path d="M9 11v5c0 1.657 3.134 3 7 3s7-1.343 7-3v-5" stroke="#00d4ff" stroke-width="1.5" fill="none"/>
+  <path d="M9 16v5c0 1.657 3.134 3 7 3s7-1.343 7-3v-5" stroke="#00d4ff" stroke-width="1.5" fill="none" opacity="0.5"/>
+  <!-- Glow dot -->
+  <circle cx="16" cy="11" r="1.5" fill="#00d4ff"/>
+</svg>
