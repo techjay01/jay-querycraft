@@ -40,11 +40,11 @@ export const useKeyboardShortcuts = (options: ShortcutOptions = {}) => {
         options.onToggleHistory?.()
       }
 
-      // Ctrl/Cmd + Shift + T — toggle theme
-      if (mod && e.shiftKey && e.key === 'T') {
-        e.preventDefault()
-        options.onToggleTheme?.()
-      }
+      // Ctrl/Cmd + Shift + M — toggle theme (T is reserved by browser)
+      if (mod && e.shiftKey && e.key === 'M') {
+      e.preventDefault()
+      options.onToggleTheme?.()
+    }
     }
 
     window.addEventListener('keydown', handleKeyDown)
