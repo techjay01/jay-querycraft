@@ -151,9 +151,17 @@ const ConditionGroup = memo(({
             className="overflow-hidden"
           >
             <DndContext
-              sensors={sensors}
-              collisionDetection={closestCenter}
-              onDragEnd={handleDragEnd}
+                sensors={sensors}
+                collisionDetection={closestCenter}
+                onDragEnd={handleDragEnd}
+                accessibility={{
+                    announcements: {
+                    onDragStart: ({ active }) => `Picked up item ${active.id}`,
+                    onDragOver: ({ over }) => over ? `Dragging over position ${over.id}` : '',
+                    onDragEnd: ({ active, over }) => over ? `Dropped item ${active.id} over ${over.id}` : `Dropped item ${active.id}`,
+                    onDragCancel: ({ active }) => `Dragging cancelled for ${active.id}`,
+                    },
+                }}
             >
               <SortableContext
                 items={sortableIds}
