@@ -151,6 +151,7 @@ const ConditionGroup = memo(({
             className="overflow-hidden"
           >
             <DndContext
+                id={`dnd-context-${depth}`}
                 sensors={sensors}
                 collisionDetection={closestCenter}
                 onDragEnd={handleDragEnd}
