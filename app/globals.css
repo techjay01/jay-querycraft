@@ -1,26 +1,321 @@
 @import "tailwindcss";
 
+/* ============================================
+   CSS CUSTOM PROPERTIES — THEME SYSTEM
+   ============================================ */
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Circuit board dark theme (default) */
+  --bg-primary: #0a0e1a;
+  --bg-secondary: #0f1629;
+  --bg-tertiary: #141d35;
+  --bg-card: #111827;
+  --bg-hover: #1a2540;
+
+  --border-primary: #1e3a5f;
+  --border-secondary: #0d2137;
+  --border-accent: #00d4ff;
+
+  --text-primary: #e2e8f0;
+  --text-secondary: #94a3b8;
+  --text-muted: #475569;
+  --text-accent: #00d4ff;
+
+  --accent-primary: #00d4ff;
+  --accent-secondary: #7c3aed;
+  --accent-success: #10b981;
+  --accent-warning: #f59e0b;
+  --accent-error: #ef4444;
+
+  --glow-primary: 0 0 20px rgba(0, 212, 255, 0.15);
+  --glow-secondary: 0 0 20px rgba(124, 58, 237, 0.15);
+  --glow-success: 0 0 20px rgba(16, 185, 129, 0.15);
+
+  --group-depth-0: rgba(0, 212, 255, 0.06);
+  --group-depth-1: rgba(124, 58, 237, 0.06);
+  --group-depth-2: rgba(16, 185, 129, 0.06);
+  --group-depth-3: rgba(245, 158, 11, 0.06);
+
+  --group-border-0: rgba(0, 212, 255, 0.25);
+  --group-border-1: rgba(124, 58, 237, 0.25);
+  --group-border-2: rgba(16, 185, 129, 0.25);
+  --group-border-3: rgba(245, 158, 11, 0.25);
+
+  --connector-color-0: rgba(0, 212, 255, 0.4);
+  --connector-color-1: rgba(124, 58, 237, 0.4);
+  --connector-color-2: rgba(16, 185, 129, 0.4);
+  --connector-color-3: rgba(245, 158, 11, 0.4);
+
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+
+  --font-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* Blueprint theme */
+[data-theme="blueprint"] {
+  --bg-primary: #f0f4f8;
+  --bg-secondary: #e2eaf3;
+  --bg-tertiary: #d4e0ed;
+  --bg-card: #ffffff;
+  --bg-hover: #dbe8f5;
+
+  --border-primary: #2563eb;
+  --border-secondary: #93c5fd;
+  --border-accent: #1d4ed8;
+
+  --text-primary: #0f172a;
+  --text-secondary: #1e3a5f;
+  --text-muted: #64748b;
+  --text-accent: #1d4ed8;
+
+  --accent-primary: #2563eb;
+  --accent-secondary: #7c3aed;
+  --accent-success: #059669;
+  --accent-warning: #d97706;
+  --accent-error: #dc2626;
+
+  --glow-primary: 0 0 20px rgba(37, 99, 235, 0.15);
+  --glow-secondary: 0 0 20px rgba(124, 58, 237, 0.15);
+  --glow-success: 0 0 20px rgba(5, 150, 105, 0.15);
+
+  --group-depth-0: rgba(37, 99, 235, 0.06);
+  --group-depth-1: rgba(124, 58, 237, 0.06);
+  --group-depth-2: rgba(5, 150, 105, 0.06);
+  --group-depth-3: rgba(217, 119, 6, 0.06);
+
+  --group-border-0: rgba(37, 99, 235, 0.3);
+  --group-border-1: rgba(124, 58, 237, 0.3);
+  --group-border-2: rgba(5, 150, 105, 0.3);
+  --group-border-3: rgba(217, 119, 6, 0.3);
+
+  --connector-color-0: rgba(37, 99, 235, 0.5);
+  --connector-color-1: rgba(124, 58, 237, 0.5);
+  --connector-color-2: rgba(5, 150, 105, 0.5);
+  --connector-color-3: rgba(217, 119, 6, 0.5);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* Light theme */
+[data-theme="light"] {
+  --bg-primary: #ffffff;
+  --bg-secondary: #f8fafc;
+  --bg-tertiary: #f1f5f9;
+  --bg-card: #ffffff;
+  --bg-hover: #f0f9ff;
+
+  --border-primary: #e2e8f0;
+  --border-secondary: #cbd5e1;
+  --border-accent: #0ea5e9;
+
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #94a3b8;
+  --text-accent: #0ea5e9;
+
+  --accent-primary: #0ea5e9;
+  --accent-secondary: #8b5cf6;
+  --accent-success: #10b981;
+  --accent-warning: #f59e0b;
+  --accent-error: #ef4444;
+
+  --glow-primary: 0 0 20px rgba(14, 165, 233, 0.1);
+  --glow-secondary: 0 0 20px rgba(139, 92, 246, 0.1);
+  --glow-success: 0 0 20px rgba(16, 185, 129, 0.1);
+
+  --group-depth-0: rgba(14, 165, 233, 0.05);
+  --group-depth-1: rgba(139, 92, 246, 0.05);
+  --group-depth-2: rgba(16, 185, 129, 0.05);
+  --group-depth-3: rgba(245, 158, 11, 0.05);
+
+  --group-border-0: rgba(14, 165, 233, 0.2);
+  --group-border-1: rgba(139, 92, 246, 0.2);
+  --group-border-2: rgba(16, 185, 129, 0.2);
+  --group-border-3: rgba(245, 158, 11, 0.2);
+
+  --connector-color-0: rgba(14, 165, 233, 0.35);
+  --connector-color-1: rgba(139, 92, 246, 0.35);
+  --connector-color-2: rgba(16, 185, 129, 0.35);
+  --connector-color-3: rgba(245, 158, 11, 0.35);
+}
+
+/* ============================================
+   BASE STYLES
+   ============================================ */
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-sans, system-ui, sans-serif);
+  transition: background-color 0.3s ease, color 0.3s ease;
+  min-height: 100vh;
+}
+
+/* ============================================
+   CIRCUIT BOARD BACKGROUND PATTERN
+   ============================================ */
+
+.circuit-bg {
+  background-color: var(--bg-primary);
+  background-image:
+    linear-gradient(rgba(0, 212, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 212, 255, 0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+[data-theme="blueprint"] .circuit-bg {
+  background-image:
+    linear-gradient(rgba(37, 99, 235, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(37, 99, 235, 0.06) 1px, transparent 1px),
+    linear-gradient(rgba(37, 99, 235, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(37, 99, 235, 0.03) 1px, transparent 1px);
+  background-size: 100px 100px, 100px 100px, 20px 20px, 20px 20px;
+}
+
+[data-theme="light"] .circuit-bg {
+  background-image:
+    linear-gradient(rgba(14, 165, 233, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(14, 165, 233, 0.04) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+/* ============================================
+   SCROLLBAR
+   ============================================ */
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-primary);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-primary);
+}
+
+/* ============================================
+   DEPTH-BASED GROUP COLORS
+   ============================================ */
+
+.group-depth-0 {
+  background-color: var(--group-depth-0);
+  border-color: var(--group-border-0);
+}
+.group-depth-1 {
+  background-color: var(--group-depth-1);
+  border-color: var(--group-border-1);
+}
+.group-depth-2 {
+  background-color: var(--group-depth-2);
+  border-color: var(--group-border-2);
+}
+.group-depth-3 {
+  background-color: var(--group-depth-3);
+  border-color: var(--group-border-3);
+}
+
+/* ============================================
+   CONNECTOR LINES — circuit board wiring effect
+   ============================================ */
+
+.connector-line {
+  position: relative;
+}
+
+.connector-line::before {
+  content: '';
+  position: absolute;
+  left: -20px;
+  top: 50%;
+  width: 20px;
+  height: 1px;
+  background: var(--connector-color-0);
+}
+
+/* ============================================
+   GLOW EFFECTS
+   ============================================ */
+
+.glow-accent {
+  box-shadow: var(--glow-primary);
+}
+
+.glow-success {
+  box-shadow: var(--glow-success);
+}
+
+/* ============================================
+   ANIMATIONS
+   ============================================ */
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(-10px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 5px rgba(0, 212, 255, 0.2); }
+  50% { box-shadow: 0 0 20px rgba(0, 212, 255, 0.5); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.2s ease forwards;
+}
+
+.animate-slide-in {
+  animation: slideIn 0.2s ease forwards;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+/* ============================================
+   UTILITY CLASSES
+   ============================================ */
+
+.font-mono {
+  font-family: var(--font-mono);
+}
+
+.text-accent {
+  color: var(--text-accent);
+}
+
+.bg-card {
+  background-color: var(--bg-card);
+}
+
+.border-primary {
+  border-color: var(--border-primary);
+}
+
+.truncate-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }

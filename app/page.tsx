@@ -1,65 +1,347 @@
-import Image from "next/image";
+// app/page.tsx
+'use client'
+
+import { useState, useCallback } from 'react'
+import { motion } from 'framer-motion'
+import {
+  Database,
+  Eye,
+  History,
+  Keyboard,
+  Moon,
+  Sun,
+  Layers,
+} from 'lucide-react'
+import { useQueryStore } from '@/store/queryStore'
+import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts'
+import { MOCK_SCHEMAS } from '@/lib/schemas'
+import { ThemeMode } from '@/types/query'
+import QueryBuilder from '@/components/builder/QueryBuilder'
+
+// ============================================
+// THEME CYCLE
+// ============================================
+
+const THEMES: ThemeMode[] = ['dark', 'blueprint', 'light']
+
+const THEME_ICONS = {
+  dark: <Moon size={14} />,
+  blueprint: <Layers size={14} />,
+  light: <Sun size={14} />,
+}
+
+const THEME_LABELS = {
+  dark: 'Circuit Dark',
+  blueprint: 'Blueprint',
+  light: 'Light',
+}
+
+// ============================================
+// PAGE
+// ============================================
 
 export default function Home() {
+  const { selectedSchema, setSchema } = useQueryStore()
+  const [theme, setTheme] = useState<ThemeMode>('dark')
+  const [showPreview, setShowPreview] = useState(true)
+  const [showHistory, setShowHistory] = useState(false)
+  const [showShortcuts, setShowShortcuts] = useState(false)
+
+  // Cycle through themes
+  const handleToggleTheme = useCallback(() => {
+    setTheme(prev => {
+      const idx = THEMES.indexOf(prev)
+      const next = THEMES[(idx + 1) % THEMES.length]
+      document.documentElement.setAttribute('data-theme', next)
+      return next
+    })
+  }, [])
+
+  // Keyboard shortcuts
+  useKeyboardShortcuts({
+    onTogglePreview: () => setShowPreview(p => !p),
+    onToggleHistory: () => setShowHistory(p => !p),
+    onToggleTheme: handleToggleTheme,
+  })
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+    <div className="circuit-bg min-h-screen flex flex-col">
+
+      {/* ── HEADER */}
+      <header
+        className="sticky top-0 z-50 border-b backdrop-blur-md"
+        style={{
+          background: 'rgba(10, 14, 26, 0.85)',
+          borderColor: 'var(--border-primary)',
+        }}
+      >
+        <div className="max-w-screen-2xl mx-auto px-4 py-3 flex items-center gap-4">
+
+          {/* Logo */}
+          <div className="flex items-center gap-2 shrink-0">
+            <div
+              className="w-7 h-7 rounded-lg flex items-center justify-center animate-pulse-glow"
+              style={{
+                background: 'rgba(0, 212, 255, 0.12)',
+                border: '1px solid rgba(0, 212, 255, 0.3)',
+              }}
             >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+              <Database size={14} style={{ color: 'var(--accent-primary)' }} />
+            </div>
+            <div>
+              <span
+                className="font-bold text-sm tracking-tight"
+                style={{ color: 'var(--text-primary)' }}
+              >
+                Query
+              </span>
+              <span
+                className="font-bold text-sm tracking-tight"
+                style={{ color: 'var(--accent-primary)' }}
+              >
+                Craft
+              </span>
+            </div>
+            <span
+              className="text-xs px-1.5 py-0.5 rounded font-mono hidden sm:block"
+              style={{
+                background: 'rgba(0, 212, 255, 0.08)',
+                color: 'var(--accent-primary)',
+                border: '1px solid rgba(0, 212, 255, 0.2)',
+                fontSize: '10px',
+              }}
             >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+              v1.0
+            </span>
+          </div>
+
+          {/* Schema selector */}
+          <div className="flex items-center gap-2">
+            <span
+              className="text-xs hidden sm:block"
+              style={{ color: 'var(--text-muted)' }}
+            >
+              Schema:
+            </span>
+            <select
+              value={selectedSchema?.id ?? ''}
+              onChange={e => setSchema(e.target.value)}
+              className="px-3 py-1.5 rounded text-sm outline-none cursor-pointer"
+              style={{
+                background: 'var(--bg-secondary)',
+                border: '1px solid var(--border-primary)',
+                color: 'var(--text-primary)',
+              }}
+            >
+              {MOCK_SCHEMAS.map(s => (
+                <option key={s.id} value={s.id}>
+                  {s.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Spacer */}
+          <div className="flex-1" />
+
+          {/* Right actions */}
+          <div className="flex items-center gap-1.5">
+
+            {/* Preview toggle */}
+            <button
+              onClick={() => setShowPreview(p => !p)}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded text-xs
+                transition-all duration-200 hover:scale-105"
+              style={{
+                background: showPreview
+                  ? 'rgba(0, 212, 255, 0.1)'
+                  : 'var(--bg-secondary)',
+                color: showPreview
+                  ? 'var(--accent-primary)'
+                  : 'var(--text-muted)',
+                border: `1px solid ${showPreview
+                  ? 'rgba(0, 212, 255, 0.25)'
+                  : 'var(--border-primary)'}`,
+              }}
+              title="Toggle preview (Ctrl+Shift+P)"
+            >
+              <Eye size={13} />
+              <span className="hidden sm:block">Preview</span>
+            </button>
+
+            {/* History toggle */}
+            <button
+              onClick={() => setShowHistory(p => !p)}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded text-xs
+                transition-all duration-200 hover:scale-105"
+              style={{
+                background: showHistory
+                  ? 'rgba(124, 58, 237, 0.1)'
+                  : 'var(--bg-secondary)',
+                color: showHistory
+                  ? 'var(--accent-secondary)'
+                  : 'var(--text-muted)',
+                border: `1px solid ${showHistory
+                  ? 'rgba(124, 58, 237, 0.25)'
+                  : 'var(--border-primary)'}`,
+              }}
+              title="Toggle history (Ctrl+Shift+H)"
+            >
+              <History size={13} />
+              <span className="hidden sm:block">History</span>
+            </button>
+
+            {/* Shortcuts */}
+            <button
+              onClick={() => setShowShortcuts(p => !p)}
+              className="p-1.5 rounded transition-all duration-200 hover:scale-105"
+              style={{
+                background: 'var(--bg-secondary)',
+                color: 'var(--text-muted)',
+                border: '1px solid var(--border-primary)',
+              }}
+              title="Keyboard shortcuts"
+            >
+              <Keyboard size={13} />
+            </button>
+
+            {/* Theme toggle */}
+            <button
+              onClick={handleToggleTheme}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded text-xs
+                transition-all duration-200 hover:scale-105"
+              style={{
+                background: 'var(--bg-secondary)',
+                color: 'var(--text-secondary)',
+                border: '1px solid var(--border-primary)',
+              }}
+              title="Toggle theme (Ctrl+Shift+T)"
+            >
+              {THEME_ICONS[theme]}
+              <span className="hidden sm:block">{THEME_LABELS[theme]}</span>
+            </button>
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+      </header>
+
+      {/* ── KEYBOARD SHORTCUTS PANEL */}
+      {showShortcuts && (
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -10 }}
+          className="border-b"
+          style={{
+            background: 'var(--bg-secondary)',
+            borderColor: 'var(--border-primary)',
+          }}
+        >
+          <div className="max-w-screen-2xl mx-auto px-4 py-3 flex flex-wrap gap-4">
+            {[
+              { keys: ['Ctrl', 'Enter'], desc: 'Run query' },
+              { keys: ['Ctrl', '⇧', 'R'], desc: 'Reset query' },
+              { keys: ['Ctrl', '⇧', 'P'], desc: 'Toggle preview' },
+              { keys: ['Ctrl', '⇧', 'H'], desc: 'Toggle history' },
+              { keys: ['Ctrl', '⇧', 'T'], desc: 'Toggle theme' },
+            ].map(({ keys, desc }) => (
+              <div key={desc} className="flex items-center gap-2">
+                <div className="flex items-center gap-1">
+                  {keys.map(k => (
+                    <kbd
+                      key={k}
+                      className="px-1.5 py-0.5 rounded text-xs font-mono"
+                      style={{
+                        background: 'var(--bg-tertiary)',
+                        border: '1px solid var(--border-primary)',
+                        color: 'var(--text-secondary)',
+                        fontSize: '10px',
+                      }}
+                    >
+                      {k}
+                    </kbd>
+                  ))}
+                </div>
+                <span className="text-xs" style={{ color: 'var(--text-muted)' }}>
+                  {desc}
+                </span>
+              </div>
+            ))}
+          </div>
+        </motion.div>
+      )}
+
+      {/* ── MAIN CONTENT */}
+      <main className="flex-1 max-w-screen-2xl mx-auto w-full px-4 py-6">
+        <div className="flex gap-4 items-start">
+
+          {/* Query builder panel */}
+          <div className="flex-1 min-w-0">
+            {/* Panel header */}
+            <div className="flex items-center gap-2 mb-4">
+              <div
+                className="w-1.5 h-5 rounded-full"
+                style={{ background: 'var(--accent-primary)' }}
+              />
+              <h2
+                className="text-sm font-semibold"
+                style={{ color: 'var(--text-primary)' }}
+              >
+                Query Builder
+              </h2>
+              {selectedSchema && (
+                <span
+                  className="text-xs px-2 py-0.5 rounded"
+                  style={{
+                    background: 'var(--bg-tertiary)',
+                    color: 'var(--text-muted)',
+                    border: '1px solid var(--border-primary)',
+                  }}
+                >
+                  {selectedSchema.name} · {selectedSchema.fields.length} fields
+                </span>
+              )}
+            </div>
+
+            <QueryBuilder />
+          </div>
+
+          {/* Preview + History sidebar — coming in PR 5 & 6 */}
+          {(showPreview || showHistory) && (
+            <div className="w-96 shrink-0 flex flex-col gap-4">
+              <div
+                className="rounded-lg border p-4 text-center"
+                style={{
+                  background: 'var(--bg-secondary)',
+                  borderColor: 'var(--border-primary)',
+                  color: 'var(--text-muted)',
+                }}
+              >
+                <p className="text-xs">
+                  Preview & History panels coming in next PRs
+                </p>
+              </div>
+            </div>
+          )}
         </div>
       </main>
+
+      {/* ── FOOTER */}
+      <footer
+        className="border-t py-3 px-4"
+        style={{
+          borderColor: 'var(--border-primary)',
+          background: 'var(--bg-secondary)',
+        }}
+      >
+        <div className="max-w-screen-2xl mx-auto flex items-center justify-between">
+          <span className="text-xs" style={{ color: 'var(--text-muted)' }}>
+            QueryCraft · Visual Query Builder
+          </span>
+          <span className="text-xs font-mono" style={{ color: 'var(--text-muted)' }}>
+            Built with Next.js · TypeScript · Zustand
+          </span>
+        </div>
+      </footer>
     </div>
-  );
+  )
 }
