@@ -1,7 +1,7 @@
 // __tests__/ConditionGroup.test.tsx
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
-import { act, renderHook } from '@testing-library/react'
+import { act } from '@testing-library/react'
 import { useQueryStore } from '@/store/queryStore'
 import ConditionGroup from '@/components/builder/ConditionGroup'
 import { QueryGroup } from '@/types/query'
