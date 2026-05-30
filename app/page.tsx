@@ -20,6 +20,7 @@ import SchemaSelector from '@/components/schema/SchemaSelector'
 import ClientOnly from '@/components/ui/ClientOnly'
 import ShortcutsPanel from '@/components/ui/ShortcutsPanel'
 import ThemeToggle from '@/components/ui/ThemeToggle'
+import StatsBar from '@/components/ui/StatsBar'
 
 // ============================================
 // THEME CYCLE
@@ -208,6 +209,19 @@ export default function Home() {
           isOpen={showShortcuts}
           onClose={() => setShowShortcuts(false)}
         />
+
+        {/* ── STATS BAR */}
+        <div
+          className="border-b px-4 py-2"
+          style={{
+            background: 'var(--bg-secondary)',
+            borderColor: 'var(--border-primary)',
+          }}
+        >
+          <div className="max-w-screen-2xl mx-auto flex items-center gap-4">
+            <StatsBar />
+          </div>
+        </div>
 
         {/* ── MAIN CONTENT */}
         <main className="flex-1 max-w-screen-2xl mx-auto w-full px-4 py-6">
