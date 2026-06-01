@@ -2,6 +2,7 @@
 'use client'
 
 import { useState, useCallback } from 'react'
+import Image from 'next/image'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Moon, Sun } from 'lucide-react'
 import { MOCK_SCHEMAS } from '@/lib/schemas'
@@ -57,12 +58,13 @@ export default function Home() {
           <div className="flex items-center gap-3">
             <div
               className="w-8 h-8 rounded-lg flex items-center justify-center font-bold text-sm"
-              style={{
-                background: 'var(--accent)',
-                color: 'var(--accent-fg)',
-              }}
             >
-              Q
+              <Image
+                src="/querycraft.svg"
+                alt="QueryCraft Logo"
+                width={80}
+                height={80}
+              />
             </div>
             <div>
               <div
