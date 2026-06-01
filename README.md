@@ -2,7 +2,7 @@
 
 A highly interactive visual query builder that allows users to construct complex database queries through a graphical interface. Built for the HNG Internship Stage 8 Frontend Challenge.
 
-**Live Demo:** [coming soon...]
+**Live Demo:** [(https://jay-querycraft.vercel.app/)]
 
 ---
 
@@ -48,27 +48,27 @@ A highly interactive visual query builder that allows users to construct complex
 
 ```
 querycraft/
-├── app/                    # Next.js App Router
-│   ├── layout.tsx          # Root layout with metadata
-│   ├── page.tsx            # Main page — EDITOR/PREVIEW/INSPECTION
-│   └── globals.css         # Design tokens and base styles
+├── app/                            # Next.js App Router
+│   ├── layout.tsx                  # Root layout with metadata
+│   ├── page.tsx                    # Main page — EDITOR/PREVIEW/INSPECTION
+│   └── globals.css                 # Design tokens and base styles
 ├── components/
-│   ├── builder/            # Core query builder components
+│   ├── builder/                    # Core query builder components
 │   │   ├── QueryBuilder.tsx        # Root builder component
 │   │   ├── ConditionGroup.tsx      # RECURSIVE group component
 │   │   ├── ConditionRule.tsx       # Single rule row
 │   │   ├── GroupHeader.tsx         # AND/OR toggle + group actions
 │   │   └── AddRuleBar.tsx          # Action toolbar
-│   ├── preview/            # Query output preview
+│   ├── preview/                    # Query output preview
 │   │   └── QueryPreview.tsx        # Live SQL/MongoDB/GraphQL preview
-│   ├── results/            # Query execution results
+│   ├── results/                    # Query execution results
 │   │   ├── ResultsPanel.tsx        # Results table with pagination
 │   │   └── ResultRow.tsx           # Expandable result row
-│   ├── history/            # Query history and presets
+│   ├── history/                    # Query history and presets
 │   │   └── QueryHistory.tsx        # History and presets panel
-│   ├── schema/             # Schema selector
+│   ├── schema/                     # Schema selector
 │   │   └── SchemaSelector.tsx      # Data source selector
-│   └── ui/                 # Shared UI primitives
+│   └── ui/                         # Shared UI primitives
 │       ├── StatsBar.tsx            # Live query stats
 │       ├── ShortcutsPanel.tsx      # Keyboard shortcuts modal
 │       ├── ThemeToggle.tsx         # Dark/light toggle
@@ -78,23 +78,23 @@ querycraft/
 │       ├── Tooltip.tsx             # Hover tooltip
 │       └── EmptyState.tsx          # Empty state component
 ├── store/
-│   ├── queryStore.ts       # Zustand query tree store
-│   └── historyStore.ts     # Zustand history/presets store
+│   ├── queryStore.ts               # Zustand query tree store
+│   └── historyStore.ts             # Zustand history/presets store
 ├── lib/
-│   ├── queryEngine.ts      # SQL/MongoDB/GraphQL generators
-│   ├── queryExecutor.ts    # Mock dataset filter engine
-│   ├── validators.ts       # Query validation engine
-│   └── schemas.ts          # Mock schemas and datasets
+│   ├── queryEngine.ts              # SQL/MongoDB/GraphQL generators
+│   ├── queryExecutor.ts            # Mock dataset filter engine
+│   ├── validators.ts               # Query validation engine
+│   └── schemas.ts                  # Mock schemas and datasets
 ├── types/
-│   └── query.ts            # All TypeScript types
+│   └── query.ts                    # All TypeScript types
 ├── hooks/
 │   ├── useQueryBuilder.ts          # Query builder hook
 │   └── useKeyboardShortcuts.ts     # Keyboard shortcuts hook
 └── tests/
-├── queryEngine.test.ts         # 45 engine tests
-├── validators.test.ts          # 24 validator tests
-├── queryStore.test.ts          # 36 store tests
-└── ConditionGroup.test.tsx     # 17 UI tests
+├── queryEngine.test.ts             # 45 engine tests
+├── validators.test.ts              # 24 validator tests
+├── queryStore.test.ts              # 36 store tests
+└── ConditionGroup.test.tsx         # 17 UI tests
 ```
 
 ### Recursive Rendering Strategy
