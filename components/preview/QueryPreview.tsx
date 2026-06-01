@@ -197,7 +197,7 @@ const QueryPreview = memo(() => {
             </div>
           ) : (
             <pre
-              className="p-4 text-xs overflow-auto leading-relaxed"
+              className="p-6 text-xs overflow-auto leading-relaxed"
               style={{
                 color: 'var(--text-secondary)',
                 fontFamily: 'var(--font-mono)',

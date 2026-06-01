@@ -4,6 +4,7 @@
 import { useState, useCallback } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Moon, Sun } from 'lucide-react'
+import { MOCK_SCHEMAS } from '@/lib/schemas'
 import { useQueryStore } from '@/store/queryStore'
 import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts'
 import { ThemeMode } from '@/types/query'
@@ -12,9 +13,10 @@ import QueryPreview from '@/components/preview/QueryPreview'
 import ResultsPanel from '@/components/results/ResultsPanel'
 import QueryHistory from '@/components/history/QueryHistory'
 import ShortcutsPanel from '@/components/ui/ShortcutsPanel'
+import StatsBar from '@/components/ui/StatsBar'
 
 export default function Home() {
-  useQueryStore()
+  const { selectedSchema, setSchema } = useQueryStore()
   const [theme, setTheme] = useState<ThemeMode>('dark')
   const [showHistory, setShowHistory] = useState(false)
   const [showShortcuts, setShowShortcuts] = useState(false)
@@ -39,13 +41,17 @@ export default function Home() {
     >
       {/* ── HEADER */}
       <header
-        className="border-b shrink-0"
+        className="border-b shrink-0 sticky top-0 z-50"
         style={{
           background: 'var(--bg-surface)',
           borderColor: 'var(--border)',
+          backdropFilter: 'blur(8px)',
         }}
       >
-        <div className="max-w-6xl mx-auto px-6 lg:px-10 h-16 flex items-center justify-between">
+        <div
+          className="h-16 flex items-center justify-between w-full"
+          style={{ maxWidth: '1100px', margin: '0 auto', padding: '0 48px' }}
+        >
 
           {/* Logo */}
           <div className="flex items-center gap-3">
@@ -76,6 +82,40 @@ export default function Home() {
 
           {/* Right actions */}
           <div className="flex items-center gap-2">
+
+            {/* Schema selector */}
+            <div className="flex items-center gap-2 shrink-0">
+              <span
+                className="text-xs uppercase tracking-wider hidden sm:block"
+                style={{ color: 'var(--text-muted)' }}
+              >
+                Source
+              </span>
+              <select
+                value={selectedSchema?.id ?? ''}
+                onChange={e => setSchema(e.target.value)}
+                className="px-3 py-1.5 rounded text-xs uppercase tracking-wider"
+                style={{
+                  background: 'var(--bg-input)',
+                  border: '1px solid var(--border)',
+                  color: 'var(--text)',
+                  fontFamily: 'var(--font-mono)',
+                  cursor: 'pointer',
+                }}
+              >
+                {MOCK_SCHEMAS.map(s => (
+                  <option key={s.id} value={s.id}
+                    style={{ background: 'var(--bg-card)' }}
+                  >
+                    {s.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Divider */}
+            <div className="w-px h-5" style={{ background: 'var(--border)' }} />
+
             <button
               onClick={() => setShowHistory(p => !p)}
               className="px-3 py-1.5 rounded text-xs uppercase tracking-wider
@@ -122,6 +162,22 @@ export default function Home() {
         </div>
       </header>
 
+      {/* ── STATS BAR */}
+      <div
+        className="border-b shrink-0"
+        style={{
+          background: 'var(--bg-surface)',
+          borderColor: 'var(--border)',
+        }}
+      >
+        <div
+          className="flex items-center gap-4 py-2"
+          style={{ maxWidth: '1100px', margin: '0 auto', padding: '8px 48px' }}
+        >
+          <StatsBar />
+        </div>
+      </div>
+
       {/* ── SHORTCUTS MODAL */}
       <ShortcutsPanel
         isOpen={showShortcuts}
@@ -130,7 +186,10 @@ export default function Home() {
 
       {/* ── MAIN CONTENT */}
       <main className="flex-1">
-        <div className="max-w-5xl mx-auto px-8 lg:px-16 py-14">
+        <div
+          className="w-full py-14"
+          style={{ maxWidth: '1100px', margin: '0 auto', padding: '56px 48px' }}
+        >
 
           {/* ── TOP ROW: EDITOR + PREVIEW */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 mb-16">
@@ -245,7 +304,10 @@ export default function Home() {
           background: 'var(--bg-surface)',
         }}
       >
-        <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
+        <div
+          className="flex items-center justify-between w-full"
+          style={{ maxWidth: '1100px', margin: '0 auto', padding: '0 48px' }}
+        >
           <span
             className="text-xs uppercase tracking-widest"
             style={{ color: 'var(--text-muted)' }}

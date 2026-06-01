@@ -333,7 +333,7 @@ const QueryHistory = memo(() => {
   }, [setSchema, importQuery])
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-4">
       {/* Header */}
       <div className="flex items-center gap-2">
         <div

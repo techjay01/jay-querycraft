@@ -188,7 +188,7 @@ const ConditionGroup = memo(({
                     <motion.div
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
-                      className="py-6 text-center rounded border border-dashed
+                      className="py-10 text-center rounded border border-dashed
                         text-xs uppercase tracking-widest"
                       style={{
                         borderColor: borderColor,

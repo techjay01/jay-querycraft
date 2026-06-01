@@ -290,7 +290,7 @@ const SchemaSelector = memo(() => {
       </div>
 
       {/* Schema cards */}
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-3">
         {MOCK_SCHEMAS.map(schema => (
           <SchemaCard
             key={schema.id}

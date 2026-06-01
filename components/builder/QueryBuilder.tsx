@@ -187,57 +187,56 @@ export default function QueryBuilder() {
       </div>
 
       {/* Bottom actions */}
-      <div className="flex items-center gap-2 pt-1">
-        {/* Validate button */}
-        <button
-          onClick={handleValidate}
-          className="text-xs px-3 py-1.5 rounded border transition-all duration-200 hover:scale-105"
-          style={{
-            background: 'var(--bg-tertiary)',
-            borderColor: 'var(--border-primary)',
-            color: 'var(--text-secondary)',
-          }}
-        >
-          Validate Query
-        </button>
+        <div className="flex items-center gap-2 pt-3">
+            <button
+                onClick={handleValidate}
+                className="text-xs px-3 py-1.5 rounded border transition-all
+                duration-150 uppercase tracking-wider"
+                style={{
+                background: 'var(--bg-input)',
+                borderColor: 'var(--border)',
+                color: 'var(--text-secondary)',
+                fontFamily: 'var(--font-mono)',
+                }}
+            >
+                Validate Query
+            </button>
 
-        {/* Save as preset */}
-        {isDirty && (
-          <motion.button
-            initial={{ opacity: 0, x: -6 }}
-            animate={{ opacity: 1, x: 0 }}
-            onClick={handleSavePreset}
-            className="text-xs px-3 py-1.5 rounded border transition-all duration-200 hover:scale-105"
-            style={{
-              background: 'rgba(124, 58, 237, 0.08)',
-              borderColor: 'rgba(124, 58, 237, 0.25)',
-              color: 'var(--accent-secondary)',
-            }}
-          >
-            Save as Preset
-          </motion.button>
-        )}
+            {isDirty && (
+                <button
+                onClick={handleSavePreset}
+                className="text-xs px-3 py-1.5 rounded border transition-all
+                    duration-150 uppercase tracking-wider"
+                style={{
+                    background: 'var(--accent-subtle)',
+                    borderColor: 'var(--accent-border)',
+                    color: 'var(--accent)',
+                    fontFamily: 'var(--font-mono)',
+                }}
+                >
+                Save as Preset
+                </button>
+            )}
 
-        <div className="flex-1" />
+            <div className="flex-1" />
 
-        {/* Keyboard shortcut hint */}
-        <span
-          className="text-xs hidden sm:block"
-          style={{ color: 'var(--text-muted)' }}
-        >
-          <kbd
-            className="px-1.5 py-0.5 rounded text-xs"
-            style={{
-              background: 'var(--bg-tertiary)',
-              border: '1px solid var(--border-primary)',
-              fontFamily: 'var(--font-mono)',
-            }}
-          >
-            Ctrl+Enter
-          </kbd>
-          {' '}to run
-        </span>
-      </div>
+            <span
+                className="text-xs hidden sm:block"
+                style={{ color: 'var(--text-muted)' }}
+            >
+                <kbd
+                className="px-1.5 py-0.5 rounded text-xs"
+                style={{
+                    background: 'var(--bg-input)',
+                    border: '1px solid var(--border)',
+                    fontFamily: 'var(--font-mono)',
+                }}
+                >
+                Ctrl+Enter
+                </kbd>
+                {' '}to run
+            </span>
+        </div>
     </div>
   )
 }
