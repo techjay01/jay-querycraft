@@ -17,6 +17,9 @@ export const metadata: Metadata = {
   title: 'QueryCraft — Visual Query Builder',
   description: 'Build complex database queries visually with nested conditions, real-time preview and multi-format output.',
   keywords: ['query builder', 'SQL', 'MongoDB', 'GraphQL', 'visual query'],
+  icons: {
+    icon: '/favicon.svg',
+  },
 }
 
 export default function RootLayout({

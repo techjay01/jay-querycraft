@@ -167,7 +167,7 @@ const ResultsPanel = memo(() => {
     >
       {/* Header */}
       <div
-        className="flex items-center gap-2 px-3 py-2 border-b"
+        className="flex items-center gap-2 px-5 py-3 border-b"
         style={{ borderColor: 'var(--border-primary)' }}
       >
         <Database size={13} style={{ color: 'var(--accent-primary)' }} />

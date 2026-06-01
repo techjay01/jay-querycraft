@@ -2,13 +2,8 @@
 'use client'
 
 import { memo } from 'react'
-import { ChevronDown, ChevronRight, Plus, PlusSquare, Trash2 } from 'lucide-react'
+import { ChevronDown, ChevronRight, Plus, FolderPlus, Trash2 } from 'lucide-react'
 import { LogicalOperator } from '@/types/query'
-import { clsx } from 'clsx'
-
-// ============================================
-// PROPS
-// ============================================
 
 interface GroupHeaderProps {
   groupId?: string
@@ -24,23 +19,6 @@ interface GroupHeaderProps {
   onRemoveGroup: () => void
 }
 
-// ============================================
-// DEPTH LABEL COLORS
-// ============================================
-
-const DEPTH_ACCENT_COLORS = [
-  'var(--connector-color-0)',
-  'var(--connector-color-1)',
-  'var(--connector-color-2)',
-  'var(--connector-color-3)',
-]
-
-const DEPTH_LABELS = ['Root', 'Group', 'Nested', 'Deep']
-
-// ============================================
-// GROUP HEADER COMPONENT
-// ============================================
-
 const GroupHeader = memo(({
   logicalOperator,
   collapsed,
@@ -53,74 +31,53 @@ const GroupHeader = memo(({
   onAddGroup,
   onRemoveGroup,
 }: GroupHeaderProps) => {
-  const accentColor = DEPTH_ACCENT_COLORS[depth % DEPTH_ACCENT_COLORS.length]
-  const depthLabel = DEPTH_LABELS[Math.min(depth, DEPTH_LABELS.length - 1)]
 
   return (
-    <div
-      className="flex items-center gap-2 py-1.5"
-      aria-label={`${depthLabel} group header`}
-    >
+    <div className="flex items-center gap-2 flex-wrap">
+
       {/* Collapse toggle */}
       <button
         onClick={onToggleCollapsed}
-        className="p-1 rounded transition-all duration-200 hover:scale-110 shrink-0"
-        style={{ color: accentColor }}
+        className="w-7 h-7 rounded flex items-center justify-center
+          transition-colors shrink-0"
+        style={{
+          background: 'var(--bg-input)',
+          border: '1px solid var(--border)',
+          color: 'var(--text-muted)',
+        }}
         aria-label={collapsed ? 'Expand group' : 'Collapse group'}
         aria-expanded={!collapsed}
       >
         {collapsed
-          ? <ChevronRight size={14} />
-          : <ChevronDown size={14} />
+          ? <ChevronRight size={12} />
+          : <ChevronDown size={12} />
         }
       </button>
 
-      {/* Depth indicator */}
-      {!isRoot && (
-        <span
-          className="text-xs px-1.5 py-0.5 rounded font-mono shrink-0"
-          style={{
-            background: 'var(--bg-tertiary)',
-            color: accentColor,
-            border: `1px solid ${accentColor}`,
-            fontSize: '10px',
-          }}
-        >
-          {depthLabel}
-        </span>
-      )}
-
-      {/* AND / OR toggle */}
+      {/* AND / OR toggle — solid accent pill */}
       <button
         onClick={onToggleOperator}
-        className={clsx(
-          'px-3 py-1 rounded font-mono font-bold text-xs tracking-widest',
-          'transition-all duration-200 hover:scale-105 shrink-0',
-        )}
+        className="flex items-center gap-1.5 px-3 py-1 rounded font-bold
+          text-xs uppercase tracking-wider transition-all duration-150
+          hover:opacity-90 shrink-0"
         style={{
-          background: logicalOperator === 'AND'
-            ? 'rgba(0, 212, 255, 0.12)'
-            : 'rgba(124, 58, 237, 0.12)',
-          color: logicalOperator === 'AND'
-            ? 'var(--accent-primary)'
-            : 'var(--accent-secondary)',
-          border: `1px solid ${logicalOperator === 'AND'
-            ? 'rgba(0, 212, 255, 0.3)'
-            : 'rgba(124, 58, 237, 0.3)'}`,
-          boxShadow: logicalOperator === 'AND'
-            ? '0 0 8px rgba(0, 212, 255, 0.1)'
-            : '0 0 8px rgba(124, 58, 237, 0.1)',
+          background: 'var(--accent)',
+          color: 'var(--accent-fg)',
+          border: 'none',
+          minWidth: '70px',
+          justifyContent: 'space-between',
         }}
-        aria-label={`Toggle logical operator, currently ${logicalOperator}`}
+        aria-label={`Toggle operator, currently ${logicalOperator}`}
         title="Click to toggle AND / OR"
       >
         {logicalOperator}
+        <ChevronDown size={10} />
       </button>
 
-      {/* Child count badge */}
+      {/* Child count */}
       <span
         className="text-xs shrink-0"
-        style={{ color: 'var(--text-muted)' }}
+        style={{ color: 'var(--text-muted)', fontSize: '11px' }}
       >
         {childCount} {childCount === 1 ? 'condition' : 'conditions'}
       </span>
@@ -128,62 +85,89 @@ const GroupHeader = memo(({
       {/* Spacer */}
       <div className="flex-1" />
 
-      {/* Action buttons */}
-      <div className="flex items-center gap-1">
+      {/* Actions */}
+      <div className="flex items-center gap-1.5 shrink-0">
+
         {/* Add rule */}
         <button
           onClick={onAddRule}
-          className="flex items-center gap-1.5 px-2.5 py-1 rounded text-xs
-            transition-all duration-200 hover:scale-105"
+          className="flex items-center gap-1 px-2.5 py-1 rounded text-xs
+            uppercase tracking-wider font-medium transition-colors duration-150"
           style={{
-            background: 'rgba(16, 185, 129, 0.08)',
-            color: 'var(--accent-success)',
-            border: '1px solid rgba(16, 185, 129, 0.2)',
+            background: 'var(--bg-input)',
+            color: 'var(--text-secondary)',
+            border: '1px solid var(--border)',
           }}
-          aria-label="Add rule to this group"
-          title="Add rule (Ctrl+Enter)"
+          aria-label="Add rule"
+          title="Add rule"
+          onMouseEnter={e => {
+            e.currentTarget.style.borderColor = 'var(--accent-border)'
+            e.currentTarget.style.color = 'var(--accent)'
+          }}
+          onMouseLeave={e => {
+            e.currentTarget.style.borderColor = 'var(--border)'
+            e.currentTarget.style.color = 'var(--text-secondary)'
+          }}
         >
-          <Plus size={12} />
+          <Plus size={11} />
           Rule
         </button>
 
-        {/* Add nested group */}
+        {/* Add group */}
         <button
           onClick={onAddGroup}
-          className="flex items-center gap-1.5 px-2.5 py-1 rounded text-xs
-            transition-all duration-200 hover:scale-105"
+          className="flex items-center gap-1 px-2.5 py-1 rounded text-xs
+            uppercase tracking-wider font-medium transition-colors duration-150"
           style={{
-            background: 'rgba(124, 58, 237, 0.08)',
-            color: 'var(--accent-secondary)',
-            border: '1px solid rgba(124, 58, 237, 0.2)',
+            background: 'var(--bg-input)',
+            color: 'var(--text-secondary)',
+            border: '1px solid var(--border)',
           }}
-          aria-label="Add nested group"
+          aria-label="Add group"
           title="Add nested group"
+          onMouseEnter={e => {
+            e.currentTarget.style.borderColor = 'var(--accent-border)'
+            e.currentTarget.style.color = 'var(--accent)'
+          }}
+          onMouseLeave={e => {
+            e.currentTarget.style.borderColor = 'var(--border)'
+            e.currentTarget.style.color = 'var(--text-secondary)'
+          }}
         >
-          <PlusSquare size={12} />
+          <FolderPlus size={11} />
           Group
         </button>
 
-        {/* Remove group — hidden for root */}
+        {/* Remove group */}
         {!isRoot && (
           <button
             onClick={onRemoveGroup}
-            className="p-1.5 rounded transition-all duration-200 hover:scale-110"
-            style={{ color: 'var(--text-muted)' }}
-            onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent-error)')}
-            onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-muted)')}
+            className="w-7 h-7 flex items-center justify-center rounded
+              transition-colors duration-150"
+            style={{
+              background: 'var(--bg-input)',
+              color: 'var(--text-muted)',
+              border: '1px solid var(--border)',
+            }}
             aria-label="Remove this group"
             title="Remove group"
+            onMouseEnter={e => {
+              e.currentTarget.style.color = 'var(--danger)'
+              e.currentTarget.style.borderColor = 'var(--danger-border)'
+            }}
+            onMouseLeave={e => {
+              e.currentTarget.style.color = 'var(--text-muted)'
+              e.currentTarget.style.borderColor = 'var(--border)'
+            }}
           >
-            <Trash2 size={13} />
+            <Trash2 size={12} />
           </button>
         )}
       </div>
 
-        {/* Accessible label */}
-        <span className="sr-only">
-        {depthLabel} logical group using {logicalOperator}
-        </span>
+      <span className="sr-only">
+        {depth === 0 ? 'Root' : 'Nested'} group using {logicalOperator}
+      </span>
     </div>
   )
 })

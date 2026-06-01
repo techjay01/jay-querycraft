@@ -111,7 +111,7 @@ const ShortcutsPanel = memo(({ isOpen, onClose }: ShortcutsPanelProps) => {
             </div>
 
             {/* Shortcut groups */}
-            <div className="p-4 flex flex-col gap-4">
+            <div className="p-6 flex flex-col gap-5">
               {SHORTCUT_GROUPS.map(group => (
                 <div key={group.title} className="flex flex-col gap-2">
                   <p
