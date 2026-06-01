@@ -3,20 +3,19 @@
 
 import { memo, useState, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Copy, Check, Code2, RefreshCw } from 'lucide-react'
+import { Copy, Check } from 'lucide-react'
 import { useQueryStore } from '@/store/queryStore'
 import { useQueryBuilder } from '@/hooks/useQueryBuilder'
 import { QueryOutputFormat } from '@/types/query'
-import { clsx } from 'clsx'
 
 // ============================================
-// FORMAT TAB
+// FORMAT TABS
 // ============================================
 
-const FORMAT_TABS: { value: QueryOutputFormat; label: string; color: string }[] = [
-  { value: 'sql', label: 'SQL', color: 'var(--accent-primary)' },
-  { value: 'mongodb', label: 'MongoDB', color: 'var(--accent-success)' },
-  { value: 'graphql', label: 'GraphQL', color: '#f472b6' },
+const FORMAT_TABS: { value: QueryOutputFormat; label: string }[] = [
+  { value: 'sql', label: 'PostgreSQL' },
+  { value: 'mongodb', label: 'MongoDB' },
+  { value: 'graphql', label: 'GraphQL' },
 ]
 
 // ============================================
@@ -40,22 +39,16 @@ const CopyButton = memo(({ text }: { text: string }) => {
     <button
       onClick={handleCopy}
       className="flex items-center gap-1.5 px-2.5 py-1 rounded text-xs
-        transition-all duration-200 hover:scale-105"
+        uppercase tracking-wider transition-colors duration-150"
       style={{
-        background: copied
-          ? 'rgba(16, 185, 129, 0.1)'
-          : 'var(--bg-tertiary)',
-        color: copied
-          ? 'var(--accent-success)'
-          : 'var(--text-muted)',
-        border: `1px solid ${copied
-          ? 'rgba(16, 185, 129, 0.25)'
-          : 'var(--border-primary)'}`,
+        background: copied ? 'var(--success-subtle)' : 'var(--bg-input)',
+        color: copied ? 'var(--success)' : 'var(--text-muted)',
+        border: `1px solid ${copied ? 'var(--success-border)' : 'var(--border)'}`,
+        fontFamily: 'var(--font-mono)',
       }}
-      aria-label="Copy to clipboard"
     >
       {copied ? <Check size={11} /> : <Copy size={11} />}
-      {copied ? 'Copied!' : 'Copy'}
+      {copied ? 'Copied' : 'Copy'}
     </button>
   )
 })
@@ -63,7 +56,7 @@ const CopyButton = memo(({ text }: { text: string }) => {
 CopyButton.displayName = 'CopyButton'
 
 // ============================================
-// SYNTAX HIGHLIGHTER — lightweight, no deps
+// SYNTAX HIGHLIGHT
 // ============================================
 
 const highlight = (code: string, format: QueryOutputFormat): string => {
@@ -71,75 +64,41 @@ const highlight = (code: string, format: QueryOutputFormat): string => {
     return code
       .replace(
         /\b(SELECT|FROM|WHERE|AND|OR|NOT|IN|BETWEEN|LIKE|IS|NULL|TRUE|FALSE|REGEXP)\b/g,
-        '<span style="color: var(--accent-primary); font-weight: 600;">$1</span>'
+        '<span style="color:var(--accent);font-weight:600;">$1</span>'
       )
-      .replace(
-        /`([^`]+)`/g,
-        '<span style="color: #f472b6;">$&</span>'
-      )
-      .replace(
-        /'([^']*)'/g,
-        '<span style="color: var(--accent-success);">$&</span>'
-      )
-      .replace(
-        /\b(\d+\.?\d*)\b/g,
-        '<span style="color: var(--accent-warning);">$1</span>'
-      )
+      .replace(/`([^`]+)`/g, '<span style="color:#93c5fd;">$&</span>')
+      .replace(/'([^']*)'/g, '<span style="color:var(--success);">$&</span>')
+      .replace(/\b(\d+\.?\d*)\b/g, '<span style="color:#f9a8d4;">$1</span>')
   }
 
   if (format === 'mongodb') {
     return code
       .replace(
         /"\$[a-zA-Z]+"/g,
-        '<span style="color: var(--accent-primary); font-weight: 600;">$&</span>'
+        '<span style="color:var(--accent);font-weight:600;">$&</span>'
       )
-      .replace(
-        /"([^$"][^"]*)"\s*:/g,
-        '<span style="color: #f472b6;">$&</span>'
-      )
-      .replace(
-        /:\s*"([^"]*)"/g,
-        ': <span style="color: var(--accent-success);">$&</span>'
-      )
-      .replace(
-        /:\s*(\d+\.?\d*)/g,
-        ': <span style="color: var(--accent-warning);">$1</span>'
-      )
-      .replace(
-        /\b(true|false|null)\b/g,
-        '<span style="color: var(--accent-secondary);">$1</span>'
-      )
+      .replace(/"([^$"][^"]*)"\s*:/g, '<span style="color:#93c5fd;">$&</span>')
+      .replace(/:\s*"([^"]*)"/g, ': <span style="color:var(--success);">$&</span>')
+      .replace(/:\s*(\d+\.?\d*)/g, ': <span style="color:#f9a8d4;">$1</span>')
+      .replace(/\b(true|false|null)\b/g, '<span style="color:var(--accent);">$1</span>')
   }
 
   if (format === 'graphql') {
     return code
       .replace(
         /\b(query|mutation|filter|and|or|items|totalCount)\b/g,
-        '<span style="color: var(--accent-primary); font-weight: 600;">$1</span>'
+        '<span style="color:var(--accent);font-weight:600;">$1</span>'
       )
-      .replace(
-        /\b([a-zA-Z_][a-zA-Z0-9_]*)\s*(?=:)/g,
-        '<span style="color: #f472b6;">$1</span>'
-      )
-      .replace(
-        /:\s*"([^"]*)"/g,
-        ': <span style="color: var(--accent-success);">"$1"</span>'
-      )
-      .replace(
-        /:\s*(\d+\.?\d*)/g,
-        ': <span style="color: var(--accent-warning);">$1</span>'
-      )
-      .replace(
-        /\b(true|false|null)\b/g,
-        '<span style="color: var(--accent-secondary);">$1</span>'
-      )
+      .replace(/\b([a-zA-Z_][a-zA-Z0-9_]*)\s*(?=:)/g, '<span style="color:#93c5fd;">$1</span>')
+      .replace(/:\s*"([^"]*)"/g, ': <span style="color:var(--success);">"$1"</span>')
+      .replace(/:\s*(\d+\.?\d*)/g, ': <span style="color:#f9a8d4;">$1</span>')
   }
 
   return code
 }
 
 // ============================================
-// QUERY PREVIEW — MAIN COMPONENT
+// QUERY PREVIEW
 // ============================================
 
 const QueryPreview = memo(() => {
@@ -153,70 +112,67 @@ const QueryPreview = memo(() => {
 
   const highlighted = highlight(outputString, outputFormat)
 
-  const isEmpty = !isDirty && outputString.includes('SELECT *\nFROM records')
-    || outputString === '{}'
-    || outputString === 'query {\n  recordsList {\n    items { id }\n  }\n}'
-
   return (
     <div
-      className="flex flex-col rounded-lg border overflow-hidden"
+      className="rounded-lg border overflow-hidden"
       style={{
         background: 'var(--bg-card)',
-        borderColor: 'var(--border-primary)',
+        borderColor: 'var(--border)',
       }}
     >
       {/* Header */}
       <div
-        className="flex items-center gap-2 px-3 py-2 border-b"
-        style={{ borderColor: 'var(--border-primary)' }}
+        className="flex items-center justify-between px-4 py-3 border-b"
+        style={{ borderColor: 'var(--border)' }}
       >
-        <Code2 size={13} style={{ color: 'var(--accent-primary)' }} />
-        <span
-          className="text-xs font-semibold"
-          style={{ color: 'var(--text-primary)' }}
-        >
-          Query Preview
-        </span>
-
-        {isDirty && (
-          <span
-            className="flex items-center gap-1 text-xs"
-            style={{ color: 'var(--accent-warning)', fontSize: '10px' }}
+        <div className="flex items-center gap-2">
+          <div
+            className="w-6 h-6 rounded flex items-center justify-center text-xs font-bold"
+            style={{
+              background: 'var(--accent)',
+              color: 'var(--accent-fg)',
+            }}
           >
-            <RefreshCw size={9} className="animate-spin" />
-            live
+            {'<>'}
+          </div>
+          <span
+            className="text-xs font-bold uppercase tracking-wider"
+            style={{ color: 'var(--text)' }}
+          >
+            Live Output
           </span>
-        )}
-
-        <div className="flex-1" />
+          {isDirty && (
+            <span
+              className="text-xs uppercase tracking-widest"
+              style={{ color: 'var(--accent)', fontSize: '9px' }}
+            >
+              ● live
+            </span>
+          )}
+        </div>
         <CopyButton text={outputString} />
       </div>
 
       {/* Format tabs */}
       <div
         className="flex border-b"
-        style={{ borderColor: 'var(--border-primary)' }}
+        style={{ borderColor: 'var(--border)' }}
       >
         {FORMAT_TABS.map(tab => (
           <button
             key={tab.value}
             onClick={() => setOutputFormat(tab.value)}
-            className={clsx(
-              'flex-1 py-2 text-xs font-mono font-semibold transition-all duration-200',
-            )}
+            className="flex-1 py-2.5 text-xs uppercase tracking-wider
+              font-medium transition-all duration-150"
             style={{
               color: outputFormat === tab.value
-                ? tab.color
+                ? 'var(--accent-fg)'
                 : 'var(--text-muted)',
               background: outputFormat === tab.value
-                ? `${tab.color}10`
+                ? 'var(--accent)'
                 : 'transparent',
-              borderBottom: outputFormat === tab.value
-                ? `2px solid ${tab.color}`
-                : '2px solid transparent',
+              fontFamily: 'var(--font-mono)',
             }}
-            aria-pressed={outputFormat === tab.value}
-            aria-label={`Switch to ${tab.label} format`}
           >
             {tab.label}
           </button>
@@ -227,56 +183,49 @@ const QueryPreview = memo(() => {
       <AnimatePresence mode="wait">
         <motion.div
           key={outputFormat}
-          initial={{ opacity: 0, y: 4 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -4 }}
-          transition={{ duration: 0.15 }}
-          className="relative flex-1"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.12 }}
         >
-          {isEmpty ? (
+          {!isDirty ? (
             <div
-              className="flex flex-col items-center justify-center py-10 px-4 text-center"
+              className="py-12 text-center text-xs uppercase tracking-widest"
               style={{ color: 'var(--text-muted)' }}
             >
-              <Code2 size={24} className="mb-2 opacity-30" />
-              <p className="text-xs">
-                Add conditions to see the generated query
-              </p>
+              Add conditions to see output
             </div>
           ) : (
             <pre
-              className="p-4 text-xs overflow-auto font-mono leading-relaxed"
+              className="p-4 text-xs overflow-auto leading-relaxed"
               style={{
                 color: 'var(--text-secondary)',
                 fontFamily: 'var(--font-mono)',
-                maxHeight: '320px',
+                maxHeight: '280px',
                 tabSize: 2,
               }}
               dangerouslySetInnerHTML={{ __html: highlighted }}
-              aria-label={`Generated ${outputFormat.toUpperCase()} query`}
             />
           )}
         </motion.div>
       </AnimatePresence>
 
-      {/* Stats bar */}
+      {/* Stats */}
       {isDirty && (
         <div
-          className="flex items-center gap-3 px-3 py-1.5 border-t text-xs"
+          className="flex items-center justify-between px-4 py-2 border-t text-xs"
           style={{
-            borderColor: 'var(--border-primary)',
+            borderColor: 'var(--border)',
             color: 'var(--text-muted)',
             fontSize: '10px',
           }}
         >
-          <span>{outputString.split('\n').length} lines</span>
-          <span>{outputString.length} chars</span>
-          <div className="flex-1" />
+          <span>{outputString.split('\n').length} lines · {outputString.length} chars</span>
           <span
-            className="font-mono"
-            style={{ color: 'var(--accent-primary)' }}
+            className="uppercase tracking-wider"
+            style={{ color: 'var(--accent)' }}
           >
-            {outputFormat.toUpperCase()}
+            {outputFormat}
           </span>
         </div>
       )}

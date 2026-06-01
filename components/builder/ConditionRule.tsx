@@ -4,12 +4,11 @@
 import { memo, useCallback } from 'react'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
-import { GripVertical, X, AlertCircle } from 'lucide-react'
+import { GripVertical, Trash2, AlertCircle } from 'lucide-react'
 import { QueryRule, SchemaField, OperatorType } from '@/types/query'
 import { FIELD_TYPE_OPERATORS, OPERATOR_META } from '@/lib/schemas'
 import { useQueryStore } from '@/store/queryStore'
 import { getNodeErrors } from '@/lib/validators'
-import { clsx } from 'clsx'
 
 // ============================================
 // PROPS
@@ -22,22 +21,6 @@ interface ConditionRuleProps {
   fields: SchemaField[]
   validationErrors: import('@/types/query').ValidationError[]
 }
-
-// ============================================
-// SHARED INPUT STYLES
-// ============================================
-
-const inputStyle = {
-  background: 'var(--bg-secondary)',
-  border: '1px solid var(--border-primary)',
-  color: 'var(--text-primary)',
-  borderRadius: '8px',
-  fontSize: '12px',
-  transition: 'border-color 0.15s ease, box-shadow 0.15s ease',
-}
-
-const inputCls = 'flex-1 px-3 py-2 rounded-lg text-xs outline-none transition-all duration-150'
-const selectCls = 'px-2.5 py-2 rounded-lg text-xs outline-none cursor-pointer transition-all duration-150'
 
 // ============================================
 // VALUE INPUT
@@ -54,31 +37,30 @@ const ValueInput = memo(({
 }) => {
   const operator = OPERATOR_META[rule.operator]
 
-  if (!operator || !operator.requiresValue) return (
-    <div
-      className="flex-1 px-3 py-2 rounded-lg text-xs italic"
-      style={{
-        color: 'var(--text-muted)',
-        background: 'var(--bg-secondary)',
-        border: '1px solid var(--border-primary)',
-      }}
-    >
-      no value needed
-    </div>
-  )
+  const cls = 'w-full py-2 text-xs outline-none bg-transparent'
+  const style = { color: 'var(--text)', fontFamily: 'var(--font-mono)' }
 
-  // Enum field
+  if (!operator || !operator.requiresValue) {
+    return (
+      <span className="text-xs italic" style={{ color: 'var(--text-muted)' }}>
+        no value needed
+      </span>
+    )
+  }
+
   if (field?.type === 'enum' && field.enumOptions) {
     return (
       <select
         value={String(rule.value ?? '')}
         onChange={e => onValueChange(e.target.value)}
-        className={`flex-1 ${selectCls}`}
-        style={inputStyle}
+        className={cls}
+        style={style}
       >
-        <option value="">Select value...</option>
+        <option value="">Select...</option>
         {field.enumOptions.map(opt => (
-          <option key={opt.value} value={opt.value}>
+          <option key={opt.value} value={opt.value}
+            style={{ background: 'var(--bg-card)' }}
+          >
             {opt.label}
           </option>
         ))}
@@ -86,112 +68,74 @@ const ValueInput = memo(({
     )
   }
 
-  // Boolean field
   if (field?.type === 'boolean') {
     return (
       <select
         value={String(rule.value ?? '')}
         onChange={e => onValueChange(e.target.value === 'true')}
-        className={`flex-1 ${selectCls}`}
-        style={inputStyle}
+        className={cls}
+        style={style}
       >
         <option value="">Select...</option>
-        <option value="true">True</option>
-        <option value="false">False</option>
+        <option value="true" style={{ background: 'var(--bg-card)' }}>True</option>
+        <option value="false" style={{ background: 'var(--bg-card)' }}>False</option>
       </select>
     )
   }
 
-  // Between operator
   if (rule.operator === 'between' || rule.operator === 'date_between') {
-    const vals = Array.isArray(rule.value)
-      ? rule.value as [string, string]
-      : ['', '']
-    const inputType = rule.operator === 'date_between' ? 'date' : 'number'
+    const vals = Array.isArray(rule.value) ? rule.value as [string, string] : ['', '']
+    const t = rule.operator === 'date_between' ? 'date' : 'number'
     return (
-      <div className="flex-1 flex gap-2 items-center">
-        <input
-          type={inputType}
-          value={vals[0] ?? ''}
+      <div className="flex items-center gap-2 w-full">
+        <input type={t} value={vals[0] ?? ''} placeholder="From"
           onChange={e => onValueChange([e.target.value, vals[1] ?? ''])}
-          placeholder="From"
-          className={inputCls}
-          style={inputStyle}
+          className={cls} style={style}
         />
-        <span
-          className="text-xs shrink-0"
-          style={{ color: 'var(--text-muted)' }}
-        >
-          to
-        </span>
-        <input
-          type={inputType}
-          value={vals[1] ?? ''}
+        <span style={{ color: 'var(--text-muted)' }}>—</span>
+        <input type={t} value={vals[1] ?? ''} placeholder="To"
           onChange={e => onValueChange([vals[0] ?? '', e.target.value])}
-          placeholder="To"
-          className={inputCls}
-          style={inputStyle}
+          className={cls} style={style}
         />
       </div>
     )
   }
 
-  // Array operator
   if (rule.operator === 'in_array' || rule.operator === 'not_in_array') {
     return (
-      <input
-        type="text"
-        value={
-          Array.isArray(rule.value)
-            ? (rule.value as string[]).join(', ')
-            : String(rule.value ?? '')
-        }
-        onChange={e =>
-          onValueChange(e.target.value.split(',').map(v => v.trim()))
-        }
+      <input type="text"
+        value={Array.isArray(rule.value) ? (rule.value as string[]).join(', ') : String(rule.value ?? '')}
+        onChange={e => onValueChange(e.target.value.split(',').map(v => v.trim()))}
         placeholder="val1, val2, val3"
-        className={inputCls}
-        style={inputStyle}
+        className={cls} style={style}
       />
     )
   }
 
-  // Date field
   if (field?.type === 'date' || operator.inputType === 'date') {
     return (
-      <input
-        type="date"
-        value={String(rule.value ?? '')}
+      <input type="date" value={String(rule.value ?? '')}
         onChange={e => onValueChange(e.target.value)}
-        className={inputCls}
-        style={inputStyle}
+        className={cls} style={style}
       />
     )
   }
 
-  // Number field
   if (field?.type === 'number' || operator.inputType === 'number') {
     return (
-      <input
-        type="number"
-        value={String(rule.value ?? '')}
+      <input type="number" value={String(rule.value ?? '')}
         onChange={e => onValueChange(Number(e.target.value))}
         placeholder="Enter number..."
-        className={inputCls}
-        style={inputStyle}
+        className={cls} style={style}
       />
     )
   }
 
-  // Default text
   return (
-    <input
-      type="text"
-      value={String(rule.value ?? '')}
+    <input type="text" value={String(rule.value ?? '')}
       onChange={e => onValueChange(e.target.value)}
       placeholder="Enter value..."
-      className={inputCls}
-      style={inputStyle}
+      className={cls} style={style}
     />
   )
 })
@@ -199,7 +143,7 @@ const ValueInput = memo(({
 ValueInput.displayName = 'ValueInput'
 
 // ============================================
-// CONDITION RULE COMPONENT
+// CONDITION RULE
 // ============================================
 
 const ConditionRule = memo(({
@@ -208,21 +152,10 @@ const ConditionRule = memo(({
   fields,
   validationErrors,
 }: ConditionRuleProps) => {
-  const {
-    updateRuleField,
-    updateRuleOperator,
-    updateRuleValue,
-    removeRule,
-  } = useQueryStore()
+  const { updateRuleField, updateRuleOperator, updateRuleValue, removeRule } = useQueryStore()
 
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({ id: rule.id })
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
+    useSortable({ id: rule.id })
 
   const dndStyle = {
     transform: CSS.Transform.toString(transform),
@@ -237,145 +170,190 @@ const ConditionRule = memo(({
     ? FIELD_TYPE_OPERATORS[currentField.type] ?? []
     : Object.keys(OPERATOR_META) as OperatorType[]
 
-  const handleFieldChange = useCallback((field: string) => {
-    updateRuleField(rule.id, field)
+  const handleFieldChange = useCallback((f: string) => {
+    updateRuleField(rule.id, f)
   }, [rule.id, updateRuleField])
 
-  const handleOperatorChange = useCallback((operator: OperatorType) => {
-    updateRuleOperator(rule.id, operator)
+  const handleOperatorChange = useCallback((op: OperatorType) => {
+    updateRuleOperator(rule.id, op)
   }, [rule.id, updateRuleOperator])
 
   const handleValueChange = useCallback((value: QueryRule['value']) => {
     updateRuleValue(rule.id, value)
   }, [rule.id, updateRuleValue])
 
-  const depthColors = [
-    'var(--connector-color-0)',
-    'var(--connector-color-1)',
-    'var(--connector-color-2)',
-    'var(--connector-color-3)',
+  const depthConnectors = [
+    'var(--connector-0)',
+    'var(--connector-1)',
+    'var(--connector-2)',
+    'var(--connector-3)',
   ]
-  const connectorColor = depthColors[depth % depthColors.length]
+  const connectorColor = depthConnectors[depth % depthConnectors.length]
+
+  const selectStyle = {
+    color: 'var(--text)',
+    fontFamily: 'var(--font-mono)',
+    fontSize: '12px',
+    background: 'transparent',
+    width: '100%',
+  }
 
   return (
     <div
       ref={setNodeRef}
       style={dndStyle}
-      className="animate-fade-in relative flex flex-col gap-1.5"
+      className="animate-fade-in relative flex flex-col gap-1"
     >
-      {/* Connector line */}
+      {/* Connector */}
       <div
-        className="absolute left-0 top-1/2 w-4 h-px -translate-x-4"
+        className="absolute left-0 top-1/2 w-3 h-px -translate-x-3"
         style={{ background: connectorColor }}
       />
 
-      {/* Rule row */}
+      {/* Card */}
       <div
-        className={clsx(
-          'flex items-center gap-2 px-3 py-2.5 rounded-xl border',
-          'transition-all duration-200',
-        )}
+        className="rounded-lg border overflow-hidden"
         style={{
-          background: hasError
-            ? 'rgba(239,68,68,0.04)'
-            : 'var(--bg-card)',
-          borderColor: hasError
-            ? 'rgba(239,68,68,0.4)'
-            : 'var(--border-primary)',
-          boxShadow: hasError
-            ? '0 0 12px rgba(239,68,68,0.08)'
-            : '0 1px 3px rgba(0,0,0,0.12)',
+          background: 'var(--bg-card)',
+          borderColor: hasError ? 'var(--danger-border)' : 'var(--border)',
         }}
       >
-        {/* Drag handle */}
-        <button
-          {...attributes}
-          {...listeners}
-          className="cursor-grab active:cursor-grabbing p-1 rounded-lg
-            transition-all duration-150 shrink-0 hover:bg-white/5"
-          style={{ color: 'var(--text-muted)' }}
-          aria-label="Drag to reorder"
+        {/* Column labels */}
+        <div
+            className="grid px-4 pt-3 pb-1.5"
+            style={{
+                gridTemplateColumns: '32px 1fr 1fr 1fr 32px',
+                gap: '12px',
+                borderBottom: '1px solid var(--border)',
+            }}
         >
-          <GripVertical size={13} />
-        </button>
+          <div />
+          <span
+            className="text-xs uppercase tracking-widest"
+            style={{ color: 'var(--text-muted)', fontSize: '9px' }}
+          >
+            Field
+          </span>
+          <span
+            className="text-xs uppercase tracking-widest"
+            style={{ color: 'var(--text-muted)', fontSize: '9px' }}
+          >
+            Operator
+          </span>
+          <span
+            className="text-xs uppercase tracking-widest"
+            style={{ color: 'var(--text-muted)', fontSize: '9px' }}
+          >
+            Value
+          </span>
+          <div />
+        </div>
 
-        {/* Field selector */}
-        <select
-          value={rule.field}
-          onChange={e => handleFieldChange(e.target.value)}
-          className={selectCls}
-          style={{
-            ...inputStyle,
-            minWidth: '120px',
-            fontWeight: rule.field ? '500' : '400',
-            color: rule.field
-              ? 'var(--accent-primary)'
-              : 'var(--text-muted)',
-          }}
+        {/* Inputs row */}
+        <div
+            className="grid items-center px-4 py-2"
+            style={{
+                gridTemplateColumns: '32px 1fr 1fr 1fr 32px',
+                gap: '12px',
+            }}
         >
-          <option value="">Field...</option>
-          {fields.map(f => (
-            <option
-              key={f.name}
-              value={f.name}
-              style={{ color: 'var(--text-primary)' }}
+          {/* Drag handle */}
+          <button
+            {...attributes}
+            {...listeners}
+            className="flex items-center justify-center cursor-grab
+              active:cursor-grabbing rounded p-1 transition-colors"
+            style={{ color: 'var(--text-muted)' }}
+            aria-label="Drag to reorder"
+          >
+            <GripVertical size={13} />
+          </button>
+
+          {/* Field */}
+          <div
+            className="rounded px-3 py-2"
+            style={{
+              background: 'var(--bg-input)',
+              border: '1px solid var(--border)',
+            }}
+          >
+            <select
+              value={rule.field}
+              onChange={e => handleFieldChange(e.target.value)}
+              style={{
+                ...selectStyle,
+                color: rule.field ? 'var(--text)' : 'var(--text-muted)',
+              }}
             >
-              {f.label}
-            </option>
-          ))}
-        </select>
+              <option value="">Select field...</option>
+              {fields.map(f => (
+                <option key={f.name} value={f.name}
+                  style={{ background: 'var(--bg-card)' }}
+                >
+                  {f.label}
+                </option>
+              ))}
+            </select>
+          </div>
 
-        {/* Operator selector */}
-        <select
-          value={rule.operator}
-          onChange={e => handleOperatorChange(e.target.value as OperatorType)}
-          className={selectCls}
-          style={{
-            ...inputStyle,
-            minWidth: '130px',
-            color: 'var(--text-secondary)',
-          }}
-        >
-          {allowedOperators.map(op => (
-            <option key={op} value={op}>
-              {OPERATOR_META[op]?.label ?? op}
-            </option>
-          ))}
-        </select>
+          {/* Operator */}
+          <div
+            className="rounded px-3 py-2"
+            style={{
+              background: 'var(--bg-input)',
+              border: '1px solid var(--border)',
+            }}
+          >
+            <select
+              value={rule.operator}
+              onChange={e => handleOperatorChange(e.target.value as OperatorType)}
+              style={selectStyle}
+            >
+              {allowedOperators.map(op => (
+                <option key={op} value={op}
+                  style={{ background: 'var(--bg-card)' }}
+                >
+                  {OPERATOR_META[op]?.label ?? op}
+                </option>
+              ))}
+            </select>
+          </div>
 
-        {/* Value input */}
-        <ValueInput
-          rule={rule}
-          field={currentField}
-          onValueChange={handleValueChange}
-        />
+          {/* Value */}
+          <div
+            className="rounded px-3 py-2"
+            style={{
+              background: 'var(--bg-input)',
+              border: '1px solid var(--border)',
+            }}
+          >
+            <ValueInput
+              rule={rule}
+              field={currentField}
+              onValueChange={handleValueChange}
+            />
+          </div>
 
-        {/* Remove button */}
-        <button
-          onClick={() => removeRule(rule.id)}
-          className="p-1.5 rounded-lg transition-all duration-200
-            hover:scale-110 shrink-0 hover:bg-red-500/10"
-          style={{ color: 'var(--text-muted)' }}
-          onMouseEnter={e =>
-            (e.currentTarget.style.color = 'var(--accent-error)')
-          }
-          onMouseLeave={e =>
-            (e.currentTarget.style.color = 'var(--text-muted)')
-          }
-          aria-label="Remove rule"
-        >
-          <X size={13} />
-        </button>
+          {/* Delete */}
+          <button
+            onClick={() => removeRule(rule.id)}
+            className="flex items-center justify-center rounded p-1
+              transition-colors"
+            style={{ color: 'var(--text-muted)' }}
+            onMouseEnter={e => (e.currentTarget.style.color = 'var(--danger)')}
+            onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-muted)')}
+            aria-label="Remove rule"
+          >
+            <Trash2 size={13} />
+          </button>
+        </div>
       </div>
 
-      {/* Validation error */}
+      {/* Error */}
       {hasError && (
         <div className="flex items-center gap-1.5 px-3 animate-fade-in">
-          <AlertCircle size={11} style={{ color: 'var(--accent-error)' }} />
-          <span
-            className="text-xs"
-            style={{ color: 'var(--accent-error)' }}
-          >
+          <AlertCircle size={11} style={{ color: 'var(--danger)' }} />
+          <span className="text-xs" style={{ color: 'var(--danger)' }}>
             {nodeErrors[0].message}
           </span>
         </div>
