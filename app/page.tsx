@@ -49,10 +49,7 @@ export default function Home() {
           backdropFilter: 'blur(8px)',
         }}
       >
-        <div
-          className="h-16 flex items-center justify-between w-full"
-          style={{ maxWidth: '1100px', margin: '0 auto', padding: '0 48px' }}
-        >
+        <div className="h-16 max-w-275 mx-auto px-6 lg:px-12 flex items-center justify-between">
 
           {/* Logo */}
           <div className="flex items-center gap-3">
@@ -172,11 +169,10 @@ export default function Home() {
           borderColor: 'var(--border)',
         }}
       >
-        <div
-          className="flex items-center gap-4 py-2"
-          style={{ maxWidth: '1100px', margin: '0 auto', padding: '8px 48px' }}
-        >
-          <StatsBar />
+        <div className="max-w-275 mx-auto px-6 lg:px-12">
+          <div className="flex items-center gap-4 py-2">
+            <StatsBar />
+          </div>
         </div>
       </div>
 
@@ -189,111 +185,111 @@ export default function Home() {
       {/* ── MAIN CONTENT */}
       <main className="flex-1">
         <div
-          className="w-full py-14"
-          style={{ maxWidth: '1100px', margin: '0 auto', padding: '56px 48px' }}
+          className="py-14"
         >
+          <div className="max-w-275 mx-auto px-6 lg:px-12">
+            {/* ── TOP ROW: EDITOR + PREVIEW */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 mb-16">
 
-          {/* ── TOP ROW: EDITOR + PREVIEW */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 mb-16">
-
-            {/* EDITOR */}
-            <div>
-              <div className="mb-6">
-                <h2
-                  className="text-xl font-bold uppercase tracking-wider mb-2"
-                  style={{ color: 'var(--text)' }}
-                >
-                  Editor
-                </h2>
-                <p
-                  className="text-xs"
-                  style={{ color: 'var(--text-muted)' }}
-                >
-                  Construct recursive logic for complex data filtering.
-                </p>
+              {/* EDITOR */}
+              <div>
+                <div className="mb-6">
+                  <h2
+                    className="text-xl font-bold uppercase tracking-wider mb-2"
+                    style={{ color: 'var(--text)' }}
+                  >
+                    Editor
+                  </h2>
+                  <p
+                    className="text-xs"
+                    style={{ color: 'var(--text-muted)' }}
+                  >
+                    Construct recursive logic for complex data filtering.
+                  </p>
+                </div>
+                <QueryBuilder />
               </div>
-              <QueryBuilder />
+
+              {/* PREVIEW */}
+              <div>
+                <div className="mb-6">
+                  <h2
+                    className="text-xl font-bold uppercase tracking-wider mb-2"
+                    style={{ color: 'var(--text)' }}
+                  >
+                    Preview
+                  </h2>
+                  <p
+                    className="text-xs"
+                    style={{ color: 'var(--text-muted)' }}
+                  >
+                    Generated syntax output.
+                  </p>
+                </div>
+                <QueryPreview />
+              </div>
             </div>
 
-            {/* PREVIEW */}
-            <div>
-              <div className="mb-6">
-                <h2
-                  className="text-xl font-bold uppercase tracking-wider mb-2"
-                  style={{ color: 'var(--text)' }}
-                >
-                  Preview
-                </h2>
-                <p
-                  className="text-xs"
-                  style={{ color: 'var(--text-muted)' }}
-                >
-                  Generated syntax output.
-                </p>
-              </div>
-              <QueryPreview />
-            </div>
-          </div>
+            {/* Divider */}
+            <div
+              className="mb-12"
+              style={{
+                height: '1px',
+                background: 'var(--border)',
+              }}
+            />
 
-          {/* Divider */}
-          <div
-            className="mb-12"
-            style={{
-              height: '1px',
-              background: 'var(--border)',
-            }}
-          />
-
-          {/* ── INSPECTION */}
-          <div className="mb-8">
-            <h2
-              className="text-xl font-bold uppercase tracking-wider mb-2"
-              style={{ color: 'var(--text)' }}
-            >
-              Inspection
-            </h2>
-            <p
-              className="text-xs mb-8"
-              style={{ color: 'var(--text-muted)' }}
-            >
-              Validate your query against live simulated data.
-            </p>
-            <ResultsPanel />
-          </div>
-
-          {/* ── HISTORY */}
-          <AnimatePresence>
-            {showHistory && (
-              <motion.div
-                initial={{ opacity: 0, y: -8 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -8 }}
-                transition={{ duration: 0.2 }}
-                className="mb-8"
+            {/* ── INSPECTION */}
+            <div className="mb-8">
+              <h2
+                className="text-xl font-bold uppercase tracking-wider mb-2"
+                style={{ color: 'var(--text)' }}
               >
-                <div
-                  className="mb-5"
-                  style={{
-                    height: '1px',
-                    background: 'var(--border)',
-                  }}
-                />
-                <h2
-                  className="text-lg font-bold uppercase tracking-wider mb-1"
-                  style={{ color: 'var(--text)' }}
+                Inspection
+              </h2>
+              <p
+                className="text-xs mb-8"
+                style={{ color: 'var(--text-muted)' }}
+              >
+                Validate your query against live simulated data.
+              </p>
+              <ResultsPanel />
+            </div>
+
+            {/* ── HISTORY */}
+            <AnimatePresence>
+              {showHistory && (
+                <motion.div
+                  initial={{ opacity: 0, y: -8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -8 }}
+                  transition={{ duration: 0.2 }}
+                  className="mb-8"
                 >
-                  History
-                </h2>
-                <p
-                  className="text-xs mb-6"
-                  style={{ color: 'var(--text-muted)' }}
-                >
-                  Previously executed queries and saved presets.
-                </p>
-                <QueryHistory />
-              </motion.div>
-            )}
-          </AnimatePresence>
+                  <div
+                    className="mb-5"
+                    style={{
+                      height: '1px',
+                      background: 'var(--border)',
+                    }}
+                  />
+                  <h2
+                    className="text-lg font-bold uppercase tracking-wider mb-1"
+                    style={{ color: 'var(--text)' }}
+                  >
+                    History
+                  </h2>
+                  <p
+                    className="text-xs mb-6"
+                    style={{ color: 'var(--text-muted)' }}
+                  >
+                    Previously executed queries and saved presets.
+                  </p>
+                  <QueryHistory />
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
 
         </div>
       </main>
@@ -306,22 +302,21 @@ export default function Home() {
           background: 'var(--bg-surface)',
         }}
       >
-        <div
-          className="flex items-center justify-between w-full"
-          style={{ maxWidth: '1100px', margin: '0 auto', padding: '0 48px' }}
-        >
-          <span
-            className="text-xs uppercase tracking-widest"
-            style={{ color: 'var(--text-muted)' }}
-          >
-            High Precision Query Builder · Built for Performance
-          </span>
-          <span
-            className="text-xs"
-            style={{ color: 'var(--accent)' }}
-          >
-            122 tests passing
-          </span>
+        <div className="max-w-275 mx-auto px-6 lg:px-12">
+          <div className="flex items-center justify-between">
+            <span
+              className="text-xs uppercase tracking-widest"
+              style={{ color: 'var(--text-muted)' }}
+            >
+              High Precision Query Builder · Built for Performance
+            </span>
+            <span
+              className="text-xs"
+              style={{ color: 'var(--accent)' }}
+            >
+              122 tests passing
+            </span>
+          </div>
         </div>
       </footer>
     </div>
