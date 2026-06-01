@@ -1,14 +1,14 @@
-# QueryCraft — Visual Query Builder
+# QueryCraft : Visual Query Builder
 
 A highly interactive visual query builder that allows users to construct complex database queries through a graphical interface. Built for the HNG Internship Stage 8 Frontend Challenge.
 
-**Live Demo:** [your-vercel-url-here]
+**Live Demo:** [coming soon...]
 
 ---
 
 ## Screenshots
 
-> Add screenshots here after deployment
+> Coming Soon...
 
 ---
 
@@ -46,6 +46,7 @@ A highly interactive visual query builder that allows users to construct complex
 
 ### Folder Structure
 
+```
 querycraft/
 ├── app/                    # Next.js App Router
 │   ├── layout.tsx          # Root layout with metadata
@@ -94,6 +95,7 @@ querycraft/
 ├── validators.test.ts          # 24 validator tests
 ├── queryStore.test.ts          # 36 store tests
 └── ConditionGroup.test.tsx     # 17 UI tests
+```
 
 ### Recursive Rendering Strategy
 
@@ -327,13 +329,13 @@ This consistency between rendering, state, generation and validation is intentio
 
 ## Trade-offs
 
-**DnD scoped per group** — Each `ConditionGroup` has its own `DndContext`. This means you can only drag within a group, not across groups. The trade-off was simplicity and reliability over cross-group drag which would require a global DnD context and complex tree manipulation.
+**DnD scoped per group** : Each `ConditionGroup` has its own `DndContext`. This means you can only drag within a group, not across groups. The trade-off was simplicity and reliability over cross-group drag which would require a global DnD context and complex tree manipulation.
 
-**Mock data only** — The query executor filters mock datasets. A real implementation would generate the query and send it to an actual database. The architecture is designed so `queryExecutor.ts` can be swapped for a real API call with minimal changes.
+**Mock data only** : The query executor filters mock datasets. A real implementation would generate the query and send it to an actual database. The architecture is designed so `queryExecutor.ts` can be swapped for a real API call with minimal changes.
 
-**No pagination on nested groups** — Very deeply nested trees (10+ levels) could cause performance issues. In practice query builders rarely exceed 3-4 levels of nesting.
+**No pagination on nested groups** : Very deeply nested trees (10+ levels) could cause performance issues. In practice query builders rarely exceed 3-4 levels of nesting.
 
-**localStorage for history** — Query history persists via Zustand persist middleware to localStorage. This means history is browser-specific and not synced across devices.
+**localStorage for history** : Query history persists via Zustand persist middleware to localStorage. This means history is browser-specific and not synced across devices.
 
 ---
 
@@ -349,4 +351,4 @@ This project enforces proper engineering workflow:
 
 ---
 
-*Built with Next.js · TypeScript · Zustand · Vitest*
+*Built by Jay Tech*
