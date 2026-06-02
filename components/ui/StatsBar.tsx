@@ -55,14 +55,14 @@ const StatsBar = memo(() => {
 
       {/* Rules */}
       {item(
-        <span>{ruleCount} {ruleCount === 1 ? 'rule' : 'rules'}</span>
+        <span style={{ color: 'var(--text-secondary)' }}>{ruleCount} {ruleCount === 1 ? 'rule' : 'rules'}</span>
       )}
 
       {/* Groups */}
       {groupCount > 0 && (
         <>
           {divider}
-          {item(<span>{groupCount} {groupCount === 1 ? 'group' : 'groups'}</span>)}
+          {item(<span style={{ color: 'var(--text-secondary)' }}>{groupCount} {groupCount === 1 ? 'group' : 'groups'}</span>)}
         </>
       )}
 
@@ -72,8 +72,8 @@ const StatsBar = memo(() => {
       {isDirty && (
         isValid
           ? item(<>
-              {dot('var(--success)')}
-              <span style={{ color: 'var(--success)' }}>Valid</span>
+              {dot('var(--accent)')}
+              <span style={{ color: 'var(--text-secondary)' }}>Valid</span>
             </>)
           : errorCount > 0
             ? item(<>
@@ -91,11 +91,13 @@ const StatsBar = memo(() => {
           {divider}
           {item(
             <>
-              {dot('var(--success)')}
-              <span style={{ color: 'var(--success)' }}>
+              {dot('var(--accent)')}
+              <span style={{ color: 'var(--text-secondary)' }}>
                 {executionResult.totalCount} results
               </span>
-              <span>in {executionResult.executionTime}ms</span>
+              <span style={{ color: 'var(--text-secondary)' }}>
+                in {executionResult.executionTime}ms
+              </span>
             </>
           )}
         </>
