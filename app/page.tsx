@@ -1,6 +1,7 @@
 // app/page.tsx
 'use client'
 
+import { motion } from 'framer-motion'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import { Database, Zap, GitBranch, Code2, Shield, BarChart3, ArrowRight, CheckCircle } from 'lucide-react'
@@ -65,8 +66,14 @@ export default function Landing() {
           style={{ maxWidth: '1100px', margin: '0 auto', padding: '0 48px' }}
         >
           <div className="flex items-center gap-3">
-            <div
+            <motion.div
               className="w-12 h-12 rounded-lg flex items-center justify-center font-bold text-sm"
+              animate={{ y: [0, -3, 0] }}
+              transition={{
+                duration: 4,
+                repeat: Infinity,
+                ease: 'easeInOut',
+              }}
             >
               <Image
                 src="/querycraft.svg"
@@ -74,7 +81,7 @@ export default function Landing() {
                 width={80}
                 height={80}
               />
-            </div>
+            </motion.div>
             <div>
               <div className="font-bold text-[20px]" style={{ color: 'var(--text)' }}>
                 QueryCraft
@@ -103,44 +110,102 @@ export default function Landing() {
 
       {/* Hero */}
       <section
-        className="flex-1 flex flex-col items-center justify-center text-center py-24 px-6"
+        className="relative overflow-hidden flex-1 flex flex-col items-center justify-center text-center py-24 px-6"
         style={{ maxWidth: '800px', margin: '0 auto' }}
       >
+
+          <motion.div
+            className="absolute w-175 h-175 rounded-full pointer-events-none"
+            animate={{
+              scale: [1, 1.08, 1],
+              opacity: [0.2, 0.4, 0.2],
+            }}
+            transition={{
+              duration: 8,
+              repeat: Infinity,
+              ease: 'easeInOut',
+            }}
+            style={{
+              background:
+                'radial-gradient(circle, rgba(245,158,11,0.08), transparent 70%)',
+            }}
+          />
+
         {/* Badge */}
-        <div
-          className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs
-            uppercase tracking-wider mb-8"
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4 }}
+          className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs uppercase tracking-wider mb-8"
           style={{
             background: 'var(--accent-subtle)',
             border: '1px solid var(--accent-border)',
             color: 'var(--accent)',
           }}
         >
-          <div className="w-1.5 h-1.5 rounded-full" style={{ background: 'var(--accent)' }} />
+          <motion.div
+            className="w-1.5 h-1.5 rounded-full"
+            style={{ background: 'var(--accent)' }}
+            animate={{
+              scale: [1, 1.4, 1],
+              opacity: [1, 0.6, 1],
+            }}
+            transition={{
+              duration: 2,
+              repeat: Infinity,
+            }}
+          />
           Visual Query Builder
-        </div>
+        </motion.div>
 
         {/* Title */}
-        <h1
+        <motion.h1
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{
+            delay: 0.1,
+            duration: 0.5,
+          }}
           className="font-bold uppercase tracking-tight mb-6"
-          style={{ color: 'var(--text)', fontSize: 'clamp(32px, 5vw, 56px)', lineHeight: 1.1 }}
+          style={{
+            color: 'var(--text)',
+            fontSize: 'clamp(32px, 5vw, 56px)',
+            lineHeight: 1.1,
+          }}
         >
           Build Complex Queries.
           <br />
           <span style={{ color: 'var(--accent)' }}>Visually.</span>
-        </h1>
+        </motion.h1>
 
         {/* Subtitle */}
-        <p
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{
+            delay: 0.25,
+            duration: 0.5,
+          }}
           className="text-sm mb-10 leading-relaxed"
-          style={{ color: 'var(--text-muted)', maxWidth: '520px' }}
+          style={{
+            color: 'var(--text-muted)',
+            maxWidth: '520px',
+          }}
         >
           Construct recursive database queries through a graphical interface.
           No raw syntax required. Supports SQL, MongoDB and GraphQL output.
-        </p>
+        </motion.p>
 
         {/* CTA */}
-        <div className="flex items-center gap-3 flex-wrap justify-center">
+        <motion.div
+          className="flex items-center gap-3 flex-wrap justify-center"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{
+            delay: 0.35,
+            duration: 0.4,
+          }}
+        >
           <button
             onClick={() => router.push('/builder')}
             className="flex items-center gap-2 px-6 py-3 rounded text-sm
@@ -152,7 +217,15 @@ export default function Landing() {
             }}
           >
             Start Building
-            <ArrowRight size={14} />
+            <motion.div
+              animate={{ x: [0, 4, 0] }}
+              transition={{
+                duration: 1.5,
+                repeat: Infinity,
+              }}
+            >
+              <ArrowRight size={14} />
+            </motion.div>
           </button>
 
           <a
@@ -169,7 +242,7 @@ export default function Landing() {
           >
             View on GitHub
           </a>
-        </div>
+        </motion.div>
       </section>
 
       {/* Divider */}
@@ -187,8 +260,16 @@ export default function Landing() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {features.map(f => (
-              <div
+              <motion.div
                 key={f.title}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                whileHover={{
+                  y: -4,
+                  transition: { duration: 0.15 },
+                }}
+                whileTap={{ scale: 0.99 }}
                 className="p-6 rounded-lg border"
                 style={{
                   background: 'var(--bg-surface)',
@@ -213,7 +294,7 @@ export default function Landing() {
                 <p className="text-xs leading-relaxed" style={{ color: 'var(--text-muted)' }}>
                   {f.desc}
                 </p>
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>
