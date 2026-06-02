@@ -25,7 +25,7 @@ const SortButton = memo(({
   return (
     <button
       onClick={() => onSort(field)}
-      className="flex items-center transition-colors flex-shrink-0"
+      className="flex items-center transition-colors shrink-0"
       style={{ color: isActive ? 'var(--accent)' : 'var(--text-muted)' }}
     >
       {isActive
@@ -84,11 +84,17 @@ const ResultsPanel = memo(() => {
 
   const toggleRow = useCallback((id: string) => {
     setExpandedRows(prev => {
-      const next = new Set(prev)
-      next.has(id) ? next.delete(id) : next.add(id)
-      return next
+        const next = new Set(prev)
+
+        if (next.has(id)) {
+        next.delete(id)
+        } else {
+        next.add(id)
+        }
+
+        return next
     })
-  }, [])
+    }, [])
 
   const allRecords = executionResult?.records ?? []
   const records = searchQuery.trim()

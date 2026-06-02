@@ -92,15 +92,8 @@ const ConditionGroup = memo(({
     'var(--group-2-border)',
     'var(--group-3-border)',
   ]
-  const depthBgs = [
-    'var(--group-0-bg)',
-    'var(--group-1-bg)',
-    'var(--group-2-bg)',
-    'var(--group-3-bg)',
-  ]
 
   const borderColor = depthBorders[depth % 4]
-  const bgColor = depthBgs[depth % 4]
 
   return (
     <motion.div

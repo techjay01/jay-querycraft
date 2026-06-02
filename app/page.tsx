@@ -219,7 +219,7 @@ export default function Home() {
             {/* Mobile hamburger (ALWAYS visible on mobile) */}
             <button
               onClick={() => setShowMobileMenu(p => !p)}
-              className="block sm:hidden w-8 h-8 flex items-center justify-center border border-(--border) rounded transition-all duration-200 hover:bg-(--bg-hover) hover:text-(--text) active:scale-[0.95]"
+              className="block sm:hidden w-8 h-8 items-center justify-center border border-(--border) rounded transition-all duration-200 hover:bg-(--bg-hover) hover:text-(--text) active:scale-[0.95]"
             >
               ☰
             </button>
