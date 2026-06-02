@@ -106,7 +106,13 @@ export default function QueryBuilder() {
   }
 
   return (
-    <div className="flex flex-col gap-3">
+    <div
+        className="flex flex-col gap-3 rounded-xl border p-5"
+        style={{
+            background: 'var(--bg-card)',
+            borderColor: 'var(--border)',
+        }}
+    >
 
       {/* Validation status bar */}
       {validationErrors.length > 0 && (
@@ -150,9 +156,9 @@ export default function QueryBuilder() {
           animate={{ opacity: 1, y: 0 }}
           className="flex items-center gap-2 px-4 py-2.5 rounded-lg border text-xs"
           style={{
-            background: 'rgba(16,185,129,0.06)',
-            borderColor: 'rgba(16,185,129,0.25)',
-            color: 'var(--accent-success)',
+            background: 'var(--accent-subtle)',
+            borderColor: 'var(--accent-border)',
+            color: 'var(--accent)',
           }}
         >
           <CheckCircle2 size={13} />
@@ -177,7 +183,7 @@ export default function QueryBuilder() {
       />
 
       {/* Recursive condition group tree */}
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-3">
         <ConditionGroup
           group={rootGroup}
           depth={0}
@@ -187,11 +193,30 @@ export default function QueryBuilder() {
       </div>
 
       {/* Bottom actions */}
-        <div className="flex items-center gap-2 pt-3">
+        <div
+            className="
+                flex flex-row
+                items-start sm:items-center
+                gap-3
+                pt-4 mt-2
+            "
+            style={{
+                borderTop: '1px solid var(--border)',
+            }}
+        >
             <button
                 onClick={handleValidate}
-                className="text-xs px-3 py-1.5 rounded border transition-all
-                duration-150 uppercase tracking-wider"
+                className="
+text-xs px-3 py-1.5 rounded border
+uppercase tracking-wider
+transition-all duration-200
+hover:bg-(--bg-hover)
+hover:text-(--text)
+hover:border-(--border-light)
+hover:-translate-y-px
+active:translate-y-0
+active:scale-[0.98]
+"
                 style={{
                 background: 'var(--bg-input)',
                 borderColor: 'var(--border)',
@@ -202,15 +227,26 @@ export default function QueryBuilder() {
                 Validate Query
             </button>
 
+            <div className="flex flex-1" />
+
             {isDirty && (
                 <button
                 onClick={handleSavePreset}
-                className="text-xs px-3 py-1.5 rounded border transition-all
-                    duration-150 uppercase tracking-wider"
+                className="
+text-xs px-3 py-1.5 rounded border
+uppercase tracking-wider
+transition-all duration-200
+hover:bg-(--accent)
+hover:text-(--accent-fg)
+hover:border-(--accent)
+hover:-translate-y-px
+active:translate-y-0
+active:scale-[0.98]
+"
                 style={{
-                    background: 'var(--accent-subtle)',
-                    borderColor: 'var(--accent-border)',
-                    color: 'var(--accent)',
+                    background: 'var(--bg-input)',
+                    borderColor: 'var(--border)',
+                    color: 'var(--text-secondary)',
                     fontFamily: 'var(--font-mono)',
                 }}
                 >
@@ -218,24 +254,6 @@ export default function QueryBuilder() {
                 </button>
             )}
 
-            <div className="flex-1" />
-
-            <span
-                className="text-xs hidden sm:block"
-                style={{ color: 'var(--text-muted)' }}
-            >
-                <kbd
-                className="px-1.5 py-0.5 rounded text-xs"
-                style={{
-                    background: 'var(--bg-input)',
-                    border: '1px solid var(--border)',
-                    fontFamily: 'var(--font-mono)',
-                }}
-                >
-                Ctrl+Enter
-                </kbd>
-                {' '}to run
-            </span>
         </div>
     </div>
   )

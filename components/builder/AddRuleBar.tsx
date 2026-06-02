@@ -59,9 +59,9 @@ const AddRuleBar = memo(({ onExport, onImport }: AddRuleBarProps) => {
             e.currentTarget.style.borderColor = 'var(--border)'
             e.currentTarget.style.color = 'var(--text-secondary)'
           }}
+            title="Add Rule"
         >
           <Plus size={12} />
-          Add Rule
         </button>
 
         <button
@@ -77,17 +77,11 @@ const AddRuleBar = memo(({ onExport, onImport }: AddRuleBarProps) => {
             e.currentTarget.style.borderColor = 'var(--border)'
             e.currentTarget.style.color = 'var(--text-secondary)'
           }}
+          title="Add Group"
         >
           <FolderPlus size={12} />
-          Add Group
         </button>
       </div>
-
-      {/* Divider */}
-      <div
-        className="w-px h-5 hidden sm:block shrink-0"
-        style={{ background: 'var(--border)' }}
-      />
 
       {/* Import / Export */}
       <div className="flex items-center gap-2">
@@ -98,9 +92,9 @@ const AddRuleBar = memo(({ onExport, onImport }: AddRuleBarProps) => {
           style={btnBase}
           onMouseEnter={e => (e.currentTarget.style.color = 'var(--text)')}
           onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-secondary)')}
+            title="Export query to JSON file"
         >
           <Download size={12} />
-          Export
         </button>
 
         <button
@@ -110,14 +104,11 @@ const AddRuleBar = memo(({ onExport, onImport }: AddRuleBarProps) => {
           style={btnBase}
           onMouseEnter={e => (e.currentTarget.style.color = 'var(--text)')}
           onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-secondary)')}
+          title="Import query from JSON file"
         >
           <Upload size={12} />
-          Import
         </button>
       </div>
-
-      {/* Spacer */}
-      <div className="flex-1" />
 
       {/* Reset */}
       <button
@@ -130,8 +121,10 @@ const AddRuleBar = memo(({ onExport, onImport }: AddRuleBarProps) => {
         title="Reset query (Ctrl+Shift+R)"
       >
         <RotateCcw size={12} />
-        Reset
       </button>
+
+      {/* Spacer */}
+      <div className="flex-1" />
 
       {/* Run Query — solid accent */}
       <button

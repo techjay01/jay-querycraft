@@ -321,7 +321,7 @@ const ConditionRule = memo(({
 
           {/* Value */}
           <div
-            className="rounded px-3 py-2"
+            className="rounded px-3 py-1"
             style={{
               background: 'var(--bg-input)',
               border: '1px solid var(--border)',

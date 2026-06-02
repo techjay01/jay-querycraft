@@ -41,9 +41,9 @@ const CopyButton = memo(({ text }: { text: string }) => {
       className="flex items-center gap-1.5 px-2.5 py-1 rounded text-xs
         uppercase tracking-wider transition-colors duration-150"
       style={{
-        background: copied ? 'var(--success-subtle)' : 'var(--bg-input)',
-        color: copied ? 'var(--success)' : 'var(--text-muted)',
-        border: `1px solid ${copied ? 'var(--success-border)' : 'var(--border)'}`,
+        background: copied ? 'var(--accent-subtle)' : 'var(--bg-input)',
+        color: copied ? 'var(--accent)' : 'var(--text-muted)',
+        border: `1px solid ${copied ? 'var(--accent-border)' : 'var(--border)'}`,
         fontFamily: 'var(--font-mono)',
       }}
     >
@@ -127,13 +127,13 @@ const QueryPreview = memo(() => {
       >
         <div className="flex items-center gap-2">
           <div
-            className="w-6 h-6 rounded flex items-center justify-center text-xs font-bold"
+            className="w-6 h-6 rounded flex items-center justify-center text-xs font-bold leading-none tracking-tight"
             style={{
-              background: 'var(--accent)',
-              color: 'var(--accent-fg)',
+                background: 'var(--accent)',
+                color: 'var(--accent-fg)',
             }}
-          >
-            {'<>'}
+            >
+            {'</>'}
           </div>
           <span
             className="text-xs font-bold uppercase tracking-wider"
@@ -162,18 +162,19 @@ const QueryPreview = memo(() => {
           <button
             key={tab.value}
             onClick={() => setOutputFormat(tab.value)}
-            className="flex-1 py-2.5 text-xs uppercase tracking-wider
-              font-medium transition-all duration-150"
+            className="flex-1 py-2.5 text-xs uppercase tracking-wider font-medium transition-all duration-150 rounded-md mx-1 my-1"
             style={{
-              color: outputFormat === tab.value
-                ? 'var(--accent-fg)'
-                : 'var(--text-muted)',
-              background: outputFormat === tab.value
-                ? 'var(--accent)'
-                : 'transparent',
-              fontFamily: 'var(--font-mono)',
+                color:
+                outputFormat === tab.value
+                    ? 'var(--accent-fg)'
+                    : 'var(--text-muted)',
+                background:
+                outputFormat === tab.value
+                    ? 'var(--accent)'
+                    : 'transparent',
+                fontFamily: 'var(--font-mono)',
             }}
-          >
+            >
             {tab.label}
           </button>
         ))}
