@@ -61,13 +61,12 @@ export default function Landing() {
         className="border-b"
         style={{ background: 'var(--bg-surface)', borderColor: 'var(--border)' }}
       >
-        <div
-          className="flex items-center justify-between h-14"
-          style={{ maxWidth: '1100px', margin: '0 auto', padding: '0 48px' }}
-        >
-          <div className="flex items-center gap-3">
+        <div className="flex items-center justify-between h-14 px-3 sm:px-6 lg:px-12 max-w-6xl mx-auto">
+  
+          {/* Left side */}
+          <div className="flex items-center gap-3 min-w-0">
             <motion.div
-              className="w-12 h-12 rounded-lg flex items-center justify-center font-bold text-sm"
+              className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg flex items-center justify-center shrink-0"
               animate={{ y: [0, -3, 0] }}
               transition={{
                 duration: 4,
@@ -82,29 +81,37 @@ export default function Landing() {
                 height={80}
               />
             </motion.div>
-            <div>
-              <div className="font-bold text-[20px]" style={{ color: 'var(--text)' }}>
+
+            <div className="min-w-0">
+              <div
+                className="font-bold text-base sm:text-[20px] truncate"
+                style={{ color: 'var(--text)' }}
+              >
                 QueryCraft
               </div>
-              <div className="text-xs uppercase tracking-widest" style={{ color: 'var(--text-muted)', fontSize: '9px' }}>
+
+              <div
+                className="text-[9px] sm:text-xs uppercase tracking-widest truncate"
+                style={{ color: 'var(--text-muted)' }}
+              >
                 Query Engine v1.0
               </div>
             </div>
           </div>
 
+          {/* Right side */}
           <button
             onClick={() => router.push('/builder')}
-            className="flex items-center gap-2 px-4 py-2 rounded text-xs
-              font-bold uppercase tracking-wider transition-all duration-150
-              hover:opacity-90"
+            className="shrink-0 flex items-center gap-2 px-3 py-2 rounded text-xs font-bold uppercase tracking-wider"
             style={{
               background: 'var(--accent)',
               color: 'var(--accent-fg)',
             }}
           >
-            Launch Builder
+            <span className="hidden sm:inline">Launch Builder</span>
             <ArrowRight size={13} />
           </button>
+
         </div>
       </header>
 
@@ -246,7 +253,9 @@ export default function Landing() {
       </section>
 
       {/* Divider */}
-      <div style={{ height: '1px', background: 'var(--border)', margin: '0 48px' }} />
+      <div 
+      className="mx-4 sm:mx-8 lg:mx-12"
+      style={{ height: '1px', background: 'var(--border)' }} />
 
       {/* Features */}
       <section className="py-20 px-6">
@@ -330,10 +339,10 @@ export default function Landing() {
           background: 'var(--bg-surface)',
         }}
       >
-        <div className="max-w-350 mx-auto px-6 lg:px-12">
-          <div className="flex items-center justify-between">
+        <div className="max-w-5xl mx-auto px-3 sm:px-6 lg:px-12">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-2 text-center sm:text-left">
             <span
-              className="text-xs uppercase tracking-widest"
+              className="text-[10px] sm:text-xs uppercase tracking-widest"
               style={{ color: 'var(--text-muted)' }}
             >
               Query Craft · Filters like a pro
