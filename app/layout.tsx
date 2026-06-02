@@ -18,7 +18,7 @@ export const metadata: Metadata = {
   description: 'Build complex database queries visually with nested conditions, real-time preview and multi-format output.',
   keywords: ['query builder', 'SQL', 'MongoDB', 'GraphQL', 'visual query'],
   icons: {
-    icon: '/favicon.svg',
+    icon: '/querycraft.svg',
   },
 }
 

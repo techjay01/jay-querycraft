@@ -2,8 +2,9 @@
 'use client'
 
 import { useState, useCallback } from 'react'
+import Image from 'next/image'
 import { AnimatePresence, motion } from 'framer-motion'
-import { Moon, Sun } from 'lucide-react'
+import { Moon, Sun, ChevronDown } from 'lucide-react'
 import { MOCK_SCHEMAS } from '@/lib/schemas'
 import { useQueryStore } from '@/store/queryStore'
 import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts'
@@ -20,6 +21,7 @@ export default function Home() {
   const [theme, setTheme] = useState<ThemeMode>('dark')
   const [showHistory, setShowHistory] = useState(false)
   const [showShortcuts, setShowShortcuts] = useState(false)
+  const [showMobileMenu, setShowMobileMenu] = useState(false)
 
   const handleToggleTheme = useCallback(() => {
     setTheme(prev => {
@@ -48,21 +50,19 @@ export default function Home() {
           backdropFilter: 'blur(8px)',
         }}
       >
-        <div
-          className="h-16 flex items-center justify-between w-full"
-          style={{ maxWidth: '1100px', margin: '0 auto', padding: '0 48px' }}
-        >
+        <div className="h-16 max-w-275 mx-auto px-4 sm:px-6 lg:px-12 flex items-center justify-between flex-wrap gap-2">
 
           {/* Logo */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 -mt-0.5">
             <div
               className="w-8 h-8 rounded-lg flex items-center justify-center font-bold text-sm"
-              style={{
-                background: 'var(--accent)',
-                color: 'var(--accent-fg)',
-              }}
             >
-              Q
+              <Image
+                src="/querycraft.svg"
+                alt="QueryCraft Logo"
+                width={80}
+                height={80}
+              />
             </div>
             <div>
               <div
@@ -83,81 +83,147 @@ export default function Home() {
           {/* Right actions */}
           <div className="flex items-center gap-2">
 
-            {/* Schema selector */}
-            <div className="flex items-center gap-2 shrink-0">
-              <span
-                className="text-xs uppercase tracking-wider hidden sm:block"
-                style={{ color: 'var(--text-muted)' }}
-              >
-                Source
-              </span>
-              <select
-                value={selectedSchema?.id ?? ''}
-                onChange={e => setSchema(e.target.value)}
-                className="px-3 py-1.5 rounded text-xs uppercase tracking-wider"
+            {/* Desktop actions */}
+            <div className="hidden sm:flex items-center gap-2">
+              
+              {/* Schema selector */}
+              <div className="flex items-center gap-2 shrink-0">
+                <span className="text-xs uppercase tracking-wider hidden sm:block"
+                  style={{ color: 'var(--text-muted)' }}>
+                  Source
+                </span>
+
+                <div className="relative group">
+                  <select
+                    value={selectedSchema?.id ?? ''}
+                    onChange={e => setSchema(e.target.value)}
+                    className="
+                      w-full px-3 py-1.5 pr-8 rounded text-xs uppercase tracking-wider
+                      border border-(--border)
+                      bg-(--bg-input)
+                      text-(--text)
+                      font-mono
+                      cursor-pointer
+                      transition-all duration-200
+                      hover:border-(--border-light)
+                      focus:border-(--accent)
+                      focus:outline-none
+                      "
+                    style={{
+                      border: '1px solid var(--border)',
+                      fontFamily: 'var(--font-mono)',
+                    }}
+                  >
+                    {MOCK_SCHEMAS.map(s => (
+                      <option key={s.id} value={s.id}>
+                        {s.name}
+                      </option>
+                    ))}
+                  </select>
+
+                  <div
+                    className="
+                      absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none
+                      transition-colors duration-200
+                      text-(--text-muted)
+                      group-hover:text-(--text)
+                    "
+                  >
+                    <ChevronDown size={14} />
+                  </div>
+                </div>
+              </div>
+
+              <div className="w-px h-5" style={{ background: 'var(--border)' }} />
+
+              <button
+                onClick={() => {
+                  setShowHistory(p => !p)
+                  setShowMobileMenu(false)
+                }}
+                className="px-3 py-1.5 rounded text-xs uppercase tracking-wider border transition-all duration-200 active:scale-[0.98]"
                 style={{
-                  background: 'var(--bg-input)',
-                  border: '1px solid var(--border)',
-                  color: 'var(--text)',
-                  fontFamily: 'var(--font-mono)',
-                  cursor: 'pointer',
+                  background: showHistory
+                    ? 'var(--accent-subtle)'
+                    : 'transparent',
+                  color: showHistory
+                    ? 'var(--accent)'
+                    : 'var(--text-muted)',
+                  border: `1px solid ${
+                    showHistory ? 'var(--accent-border)' : 'var(--border)'
+                  }`,
+                }}
+                onMouseEnter={(e) => {
+                  if (!showHistory) {
+                    (e.currentTarget as HTMLButtonElement).style.background = 'var(--bg-hover)'
+                    ;(e.currentTarget as HTMLButtonElement).style.color = 'var(--text)'
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!showHistory) {
+                    (e.currentTarget as HTMLButtonElement).style.background = 'transparent'
+                    ;(e.currentTarget as HTMLButtonElement).style.color = 'var(--text-muted)'
+                  }
                 }}
               >
-                {MOCK_SCHEMAS.map(s => (
-                  <option key={s.id} value={s.id}
-                    style={{ background: 'var(--bg-card)' }}
-                  >
-                    {s.name}
-                  </option>
-                ))}
-              </select>
+                History
+              </button>
+
+              <button
+                onClick={() => {
+                  setShowShortcuts(p => !p)
+                  setShowMobileMenu(false)
+                }}
+                className="px-3 py-1.5 rounded text-xs uppercase tracking-wider border transition-all duration-200 active:scale-[0.98]"
+                style={{
+                  background: 'transparent',
+                  color: 'var(--text-muted)',
+                  border: '1px solid var(--border)',
+                }}
+                onMouseEnter={(e) => {
+                  (e.currentTarget as HTMLButtonElement).style.background = 'var(--bg-hover)'
+                  ;(e.currentTarget as HTMLButtonElement).style.color = 'var(--text)'
+                }}
+                onMouseLeave={(e) => {
+                  (e.currentTarget as HTMLButtonElement).style.background = 'transparent'
+                  ;(e.currentTarget as HTMLButtonElement).style.color = 'var(--text-muted)'
+                }}
+              >
+                Shortcuts
+              </button>
+
+              <button
+                onClick={() => {
+                  handleToggleTheme()
+                  setShowMobileMenu(false)
+                }}
+                className="w-8 h-8 rounded flex items-center justify-center border transition-all duration-200 active:scale-[0.95]"
+                style={{
+                  background: 'transparent',
+                  color: 'var(--text-muted)',
+                  border: '1px solid var(--border)',
+                }}
+                onMouseEnter={(e) => {
+                  (e.currentTarget as HTMLButtonElement).style.background = 'var(--bg-hover)'
+                  ;(e.currentTarget as HTMLButtonElement).style.color = 'var(--text)'
+                }}
+                onMouseLeave={(e) => {
+                  (e.currentTarget as HTMLButtonElement).style.background = 'transparent'
+                  ;(e.currentTarget as HTMLButtonElement).style.color = 'var(--text-muted)'
+                }}
+              >
+                {theme === 'dark' ? <Sun size={13} /> : <Moon size={13} />}
+              </button>
             </div>
 
-            {/* Divider */}
-            <div className="w-px h-5" style={{ background: 'var(--border)' }} />
-
+            {/* Mobile hamburger (ALWAYS visible on mobile) */}
             <button
-              onClick={() => setShowHistory(p => !p)}
-              className="px-3 py-1.5 rounded text-xs uppercase tracking-wider
-                transition-colors duration-150"
-              style={{
-                background: showHistory ? 'var(--accent-subtle)' : 'transparent',
-                color: showHistory ? 'var(--accent)' : 'var(--text-muted)',
-                border: `1px solid ${showHistory ? 'var(--accent-border)' : 'var(--border)'}`,
-              }}
+              onClick={() => setShowMobileMenu(p => !p)}
+              className="block sm:hidden w-8 h-8 flex items-center justify-center border border-(--border) rounded transition-all duration-200 hover:bg-(--bg-hover) hover:text-(--text) active:scale-[0.95]"
             >
-              History
+              ☰
             </button>
 
-            <button
-              onClick={() => setShowShortcuts(p => !p)}
-              className="px-3 py-1.5 rounded text-xs uppercase tracking-wider
-                transition-colors duration-150"
-              style={{
-                background: 'transparent',
-                color: 'var(--text-muted)',
-                border: '1px solid var(--border)',
-              }}
-            >
-              Shortcuts
-            </button>
-
-            <button
-              onClick={handleToggleTheme}
-              className="w-8 h-8 rounded flex items-center justify-center
-                transition-colors duration-150"
-              style={{
-                background: 'transparent',
-                color: 'var(--text-muted)',
-                border: '1px solid var(--border)',
-              }}
-              title="Toggle theme"
-            >
-              {theme === 'dark'
-                ? <Sun size={13} />
-                : <Moon size={13} />
-              }
-            </button>
           </div>
         </div>
       </header>
@@ -170,11 +236,10 @@ export default function Home() {
           borderColor: 'var(--border)',
         }}
       >
-        <div
-          className="flex items-center gap-4 py-2"
-          style={{ maxWidth: '1100px', margin: '0 auto', padding: '8px 48px' }}
-        >
-          <StatsBar />
+        <div className="max-w-275 mx-auto px-6 lg:px-12">
+          <div className="flex items-center gap-4 py-2">
+            <StatsBar />
+          </div>
         </div>
       </div>
 
@@ -187,111 +252,111 @@ export default function Home() {
       {/* ── MAIN CONTENT */}
       <main className="flex-1">
         <div
-          className="w-full py-14"
-          style={{ maxWidth: '1100px', margin: '0 auto', padding: '56px 48px' }}
+          className="py-14"
         >
+          <div className="max-w-275 mx-auto px-6 lg:px-12">
+            {/* ── TOP ROW: EDITOR + PREVIEW */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 mb-16">
 
-          {/* ── TOP ROW: EDITOR + PREVIEW */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 mb-16">
-
-            {/* EDITOR */}
-            <div>
-              <div className="mb-6">
-                <h2
-                  className="text-xl font-bold uppercase tracking-wider mb-2"
-                  style={{ color: 'var(--text)' }}
-                >
-                  Editor
-                </h2>
-                <p
-                  className="text-xs"
-                  style={{ color: 'var(--text-muted)' }}
-                >
-                  Construct recursive logic for complex data filtering.
-                </p>
+              {/* EDITOR */}
+              <div>
+                <div className="mb-6">
+                  <h2
+                    className="text-xl font-bold uppercase tracking-wider mb-2"
+                    style={{ color: 'var(--text)' }}
+                  >
+                    Editor
+                  </h2>
+                  <p
+                    className="text-xs"
+                    style={{ color: 'var(--text-muted)' }}
+                  >
+                    Construct recursive logic for complex data filtering.
+                  </p>
+                </div>
+                <QueryBuilder />
               </div>
-              <QueryBuilder />
+
+              {/* PREVIEW */}
+              <div>
+                <div className="mb-6">
+                  <h2
+                    className="text-xl font-bold uppercase tracking-wider mb-2"
+                    style={{ color: 'var(--text)' }}
+                  >
+                    Preview
+                  </h2>
+                  <p
+                    className="text-xs"
+                    style={{ color: 'var(--text-muted)' }}
+                  >
+                    Generated syntax output.
+                  </p>
+                </div>
+                <QueryPreview />
+              </div>
             </div>
 
-            {/* PREVIEW */}
-            <div>
-              <div className="mb-6">
-                <h2
-                  className="text-xl font-bold uppercase tracking-wider mb-2"
-                  style={{ color: 'var(--text)' }}
-                >
-                  Preview
-                </h2>
-                <p
-                  className="text-xs"
-                  style={{ color: 'var(--text-muted)' }}
-                >
-                  Generated syntax output.
-                </p>
-              </div>
-              <QueryPreview />
-            </div>
-          </div>
+            {/* Divider */}
+            <div
+              className="mb-12"
+              style={{
+                height: '1px',
+                background: 'var(--border)',
+              }}
+            />
 
-          {/* Divider */}
-          <div
-            className="mb-12"
-            style={{
-              height: '1px',
-              background: 'var(--border)',
-            }}
-          />
-
-          {/* ── INSPECTION */}
-          <div className="mb-8">
-            <h2
-              className="text-xl font-bold uppercase tracking-wider mb-2"
-              style={{ color: 'var(--text)' }}
-            >
-              Inspection
-            </h2>
-            <p
-              className="text-xs mb-8"
-              style={{ color: 'var(--text-muted)' }}
-            >
-              Validate your query against live simulated data.
-            </p>
-            <ResultsPanel />
-          </div>
-
-          {/* ── HISTORY */}
-          <AnimatePresence>
-            {showHistory && (
-              <motion.div
-                initial={{ opacity: 0, y: -8 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -8 }}
-                transition={{ duration: 0.2 }}
-                className="mb-8"
+            {/* ── INSPECTION */}
+            <div className="mb-8">
+              <h2
+                className="text-xl font-bold uppercase tracking-wider mb-2"
+                style={{ color: 'var(--text)' }}
               >
-                <div
-                  className="mb-5"
-                  style={{
-                    height: '1px',
-                    background: 'var(--border)',
-                  }}
-                />
-                <h2
-                  className="text-lg font-bold uppercase tracking-wider mb-1"
-                  style={{ color: 'var(--text)' }}
+                Inspection
+              </h2>
+              <p
+                className="text-xs mb-8"
+                style={{ color: 'var(--text-muted)' }}
+              >
+                Validate your query against live simulated data.
+              </p>
+              <ResultsPanel />
+            </div>
+
+            {/* ── HISTORY */}
+            <AnimatePresence>
+              {showHistory && (
+                <motion.div
+                  initial={{ opacity: 0, y: -8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -8 }}
+                  transition={{ duration: 0.2 }}
+                  className="mb-8"
                 >
-                  History
-                </h2>
-                <p
-                  className="text-xs mb-6"
-                  style={{ color: 'var(--text-muted)' }}
-                >
-                  Previously executed queries and saved presets.
-                </p>
-                <QueryHistory />
-              </motion.div>
-            )}
-          </AnimatePresence>
+                  <div
+                    className="mb-5"
+                    style={{
+                      height: '1px',
+                      background: 'var(--border)',
+                    }}
+                  />
+                  <h2
+                    className="text-lg font-bold uppercase tracking-wider mb-1"
+                    style={{ color: 'var(--text)' }}
+                  >
+                    History
+                  </h2>
+                  <p
+                    className="text-xs mb-6"
+                    style={{ color: 'var(--text-muted)' }}
+                  >
+                    Previously executed queries and saved presets.
+                  </p>
+                  <QueryHistory />
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
 
         </div>
       </main>
@@ -304,24 +369,158 @@ export default function Home() {
           background: 'var(--bg-surface)',
         }}
       >
-        <div
-          className="flex items-center justify-between w-full"
-          style={{ maxWidth: '1100px', margin: '0 auto', padding: '0 48px' }}
-        >
-          <span
-            className="text-xs uppercase tracking-widest"
-            style={{ color: 'var(--text-muted)' }}
-          >
-            High Precision Query Builder · Built for Performance
-          </span>
-          <span
-            className="text-xs"
-            style={{ color: 'var(--accent)' }}
-          >
-            122 tests passing
-          </span>
+        <div className="max-w-275 mx-auto px-6 lg:px-12">
+          <div className="flex items-center justify-between">
+            <span
+              className="text-xs uppercase tracking-widest"
+              style={{ color: 'var(--text-muted)' }}
+            >
+              High Precision Query Builder · Built for Performance
+            </span>
+            <span
+              className="text-xs"
+              style={{ color: 'var(--accent)' }}
+            >
+              122 tests passing
+            </span>
+          </div>
         </div>
       </footer>
+      
+      {showMobileMenu && (
+        <div className="fixed inset-0 z-50 sm:hidden">
+          
+          {/* Backdrop */}
+          <div
+            className="absolute inset-0 bg-black/40"
+            onClick={() => setShowMobileMenu(false)}
+          />
+
+          {/* Drawer */}
+          <div className="absolute right-0 top-0 h-full w-70 bg-(--bg-surface) border-l border-(--border) p-4 flex flex-col gap-4">
+          
+            <div className="flex items-center justify-between mb-2">
+              <div
+                className="px-3 text-xs uppercase tracking-widest"
+                style={{ color: 'var(--text-muted)' }}
+              >
+                Menu
+              </div>
+
+              <button
+                onClick={() => setShowMobileMenu(false)}
+                className="
+                  w-8 h-8 flex items-center justify-center rounded
+                  border border-(--border)
+                  transition-all duration-200
+                  hover:bg-(--bg-hover)
+                  active:scale-[0.95]
+                "
+                style={{
+                  border: '1px solid var(--border)',
+                  color: 'var(--text-muted)',
+                }}
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Source */}
+            <div className="relative group rounded">
+              <select
+                value={selectedSchema?.id ?? ''}
+                onChange={e => setSchema(e.target.value)}
+                className="
+                  w-full px-3 py-2 pr-8
+                  rounded text-xs uppercase tracking-wider
+                  border border-(--border)
+                  bg-(--bg-input)
+                  text-(--text)
+                  font-mono
+                  cursor-pointer
+                  transition-all duration-200
+
+                  hover:border-(--border-light)
+                  active:scale-[0.99]
+
+                  focus:border-(--accent)
+                  focus:outline-none
+                "
+              >
+                {MOCK_SCHEMAS.map(s => (
+                  <option key={s.id} value={s.id}>
+                    {s.name}
+                  </option>
+                ))}
+              </select>
+
+              <div
+                className="
+                  absolute right-3 top-1/2 -translate-y-1/2
+                  pointer-events-none
+                  text-(--text-muted)
+                  transition-colors duration-200
+                  group-hover:text-(--text)
+                "
+              >
+                <ChevronDown size={14} />
+              </div>
+            </div>
+
+            <button
+              onClick={() => {
+                setShowHistory(p => !p)
+                setShowMobileMenu(false)
+              }}
+              className="
+                text-left w-full px-3 py-2 rounded text-xs uppercase tracking-wider
+                border border-transparent
+                transition-all duration-200
+                hover:bg-(--bg-hover)
+                hover:border-(--border)
+                active:scale-[0.98]
+              "
+            >
+              History
+            </button>
+
+            <button
+              onClick={() => {
+                setShowShortcuts(p => !p)
+                setShowMobileMenu(false)
+              }}
+              className="
+                text-left w-full px-3 py-2 rounded text-xs uppercase tracking-wider
+                border border-transparent
+                transition-all duration-200
+                hover:bg-(--bg-hover)
+                hover:border-(--border)
+                active:scale-[0.98]
+              "
+            >
+              Shortcuts
+            </button>
+
+            <button
+              onClick={() => {
+                handleToggleTheme()
+                setShowMobileMenu(false)
+              }}
+              className="
+                text-left w-full px-3 py-2 rounded text-xs uppercase tracking-wider
+                border border-transparent
+                transition-all duration-200
+                hover:bg-(--bg-hover)
+                hover:border-(--border)
+                active:scale-[0.98]
+              "
+            >
+              Toggle Theme
+            </button>
+          </div>
+        </div>
+      )}
+
     </div>
   )
 }

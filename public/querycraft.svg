@@ -1,0 +1,22 @@
+<svg width="256" height="256" viewBox="0 0 256 256" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="grad" x1="0" y1="0" x2="256" y2="256">
+      <stop offset="0%" stop-color="#F59E0B"/>
+      <stop offset="100%" stop-color="#D97706"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Magnifying Glass -->
+  <circle cx="110" cy="110" r="55" stroke="url(#grad)" stroke-width="14" fill="none"/>
+  <line x1="150" y1="150" x2="205" y2="205"
+        stroke="url(#grad)" stroke-width="14" stroke-linecap="round"/>
+
+  <!-- Craft Pen -->
+  <path d="M100 80L130 110L120 120L90 90L100 80Z"
+        fill="url(#grad)"/>
+
+  <!-- Database -->
+  <ellipse cx="110" cy="110" rx="20" ry="8" fill="url(#grad)"/>
+  <rect x="90" y="110" width="40" height="20" fill="url(#grad)"/>
+  <ellipse cx="110" cy="130" rx="20" ry="8" fill="url(#grad)"/>
+</svg>
