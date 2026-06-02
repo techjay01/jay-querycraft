@@ -256,7 +256,7 @@ export default function Home() {
         >
           <div className="max-w-350 mx-auto px-6 lg:px-12">
             {/* ── TOP ROW: EDITOR + PREVIEW */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 mb-16">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 mb-16 items-start">
 
               {/* EDITOR */}
               <div>
@@ -278,7 +278,7 @@ export default function Home() {
               </div>
 
               {/* PREVIEW */}
-              <div>
+              <div className="flex flex-col" style={{ height: '100%' }}>
                 <div className="mb-4">
                   <h2
                     className="text-xl font-bold uppercase tracking-wider mb-2"

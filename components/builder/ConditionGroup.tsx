@@ -21,6 +21,8 @@ import { QueryGroup, QueryNode, SchemaField, ValidationError } from '@/types/que
 import { useQueryStore } from '@/store/queryStore'
 import ConditionRule from './ConditionRule'
 import GroupHeader from './GroupHeader'
+import { useSortable } from '@dnd-kit/sortable'
+import { CSS } from '@dnd-kit/utilities'
 
 interface ConditionGroupProps {
   group: QueryGroup
@@ -68,6 +70,22 @@ const ConditionGroup = memo(({
 
   const isRoot = depth === 0
 
+  // Make this group sortable when it's not root
+    const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+    } = useSortable({ id: group.id, disabled: isRoot })
+
+    const sortableStyle = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.4 : 1,
+    }
+
   const depthBorders = [
     'var(--group-0-border)',
     'var(--group-1-border)',
@@ -86,18 +104,21 @@ const ConditionGroup = memo(({
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: -4 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -4 }}
-      transition={{ duration: 0.15 }}
-      className="rounded-lg border"
-      style={{
-        background: 'var(--bg-surface)',
-        borderColor: 'var(--border)',
-        padding: isRoot ? '16px' : '14px',
-      }}
-      role="group"
-      aria-label={`Condition group with ${group.logicalOperator} logic`}
+        ref={setNodeRef}
+        style={{
+            ...sortableStyle,
+            background: 'var(--bg-surface)',
+            borderColor: 'var(--border)',
+            borderLeft: `2px solid ${borderColor}`,
+            padding: isRoot ? '20px' : '16px',
+        }}
+        initial={{ opacity: 0, y: -4 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -4 }}
+        transition={{ duration: 0.15 }}
+        className="rounded-lg border"
+        role="group"
+        aria-label={`Condition group with ${group.logicalOperator} logic`}
     >
       {/* Header */}
       <GroupHeader
@@ -112,7 +133,9 @@ const ConditionGroup = memo(({
         onAddRule={handleAddRule}
         onAddGroup={handleAddGroup}
         onRemoveGroup={handleRemoveGroup}
-      />
+        dragAttributes={attributes}
+        dragListeners={listeners}
+    />
 
       {/* Children */}
       <AnimatePresence initial={false}>
