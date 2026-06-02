@@ -336,10 +336,6 @@ const QueryHistory = memo(() => {
     <div className="flex flex-col gap-4">
       {/* Header */}
       <div className="flex items-center gap-2">
-        <div
-          className="w-1.5 h-5 rounded-full"
-          style={{ background: 'var(--accent-secondary)' }}
-        />
         <h2
           className="text-sm font-semibold"
           style={{ color: 'var(--text-primary)' }}
@@ -381,7 +377,7 @@ const QueryHistory = memo(() => {
             )}
             style={{
               background: activeTab === tab.value
-                ? 'var(--bg-card)'
+                ? 'var(--border)'
                 : 'transparent',
               color: activeTab === tab.value
                 ? 'var(--text-primary)'

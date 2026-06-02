@@ -92,10 +92,9 @@ const ConditionGroup = memo(({
       transition={{ duration: 0.15 }}
       className="rounded-lg border"
       style={{
-        background: bgColor,
-        borderColor: borderColor,
-        borderLeft: `3px solid ${borderColor}`,
-        padding: isRoot ? '20px' : '16px',
+        background: 'var(--bg-surface)',
+        borderColor: 'var(--border)',
+        padding: isRoot ? '16px' : '14px',
       }}
       role="group"
       aria-label={`Condition group with ${group.logicalOperator} logic`}
@@ -147,13 +146,13 @@ const ConditionGroup = memo(({
                 strategy={verticalListSortingStrategy}
               >
                 <div
-                  className="flex flex-col gap-4 mt-5"
+                  className="flex flex-col gap-3 mt-4"
                   style={{
-                    paddingLeft: isRoot ? 0 : '16px',
+                    paddingLeft: isRoot ? 0 : '12px',
                     borderLeft: !isRoot
                       ? `1px dashed ${borderColor}`
                       : 'none',
-                    marginLeft: !isRoot ? '8px' : 0,
+                    marginLeft: !isRoot ? '6px' : 0,
                   }}
                 >
                   <AnimatePresence mode="popLayout">
@@ -188,10 +187,10 @@ const ConditionGroup = memo(({
                     <motion.div
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
-                      className="py-10 text-center rounded border border-dashed
+                      className="py-6 text-center rounded border border-dashed
                         text-xs uppercase tracking-widest"
                       style={{
-                        borderColor: borderColor,
+                        borderColor: 'var(--border)',
                         color: 'var(--text-muted)',
                       }}
                     >
@@ -208,7 +207,7 @@ const ConditionGroup = memo(({
       {/* Collapsed indicator */}
       {group.collapsed && group.children.length > 0 && (
         <div
-          className="mt-3 px-3 py-2 rounded text-xs uppercase tracking-widest text-center"
+          className="mt-2 px-3 py-1.5 rounded text-xs uppercase tracking-widest text-center"
           style={{
             background: 'var(--bg-input)',
             color: 'var(--text-muted)',

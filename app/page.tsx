@@ -50,12 +50,12 @@ export default function Home() {
           backdropFilter: 'blur(8px)',
         }}
       >
-        <div className="h-16 max-w-275 mx-auto px-4 sm:px-6 lg:px-12 flex items-center justify-between flex-wrap gap-2">
+        <div className="h-16 max-w-350 mx-auto px-4 sm:px-6 lg:px-12 flex items-center justify-between flex-wrap gap-2">
 
           {/* Logo */}
           <div className="flex items-center gap-3 -mt-0.5">
             <div
-              className="w-8 h-8 rounded-lg flex items-center justify-center font-bold text-sm"
+              className="w-12 h-12 rounded-lg flex items-center justify-center font-bold text-sm"
             >
               <Image
                 src="/querycraft.svg"
@@ -66,7 +66,7 @@ export default function Home() {
             </div>
             <div>
               <div
-                className="font-bold text-sm tracking-tight"
+                className="font-bold text-[20px] tracking-tight"
                 style={{ color: 'var(--text)' }}
               >
                 QueryCraft
@@ -75,7 +75,7 @@ export default function Home() {
                 className="text-xs uppercase tracking-widest"
                 style={{ color: 'var(--text-muted)', fontSize: '9px' }}
               >
-                Query Engine v1.0
+                Filters like a pro
               </div>
             </div>
           </div>
@@ -236,7 +236,7 @@ export default function Home() {
           borderColor: 'var(--border)',
         }}
       >
-        <div className="max-w-275 mx-auto px-6 lg:px-12">
+        <div className="max-w-350 mx-auto px-6 lg:px-12">
           <div className="flex items-center gap-4 py-2">
             <StatsBar />
           </div>
@@ -252,15 +252,15 @@ export default function Home() {
       {/* ── MAIN CONTENT */}
       <main className="flex-1">
         <div
-          className="py-14"
+          className="py-16"
         >
-          <div className="max-w-275 mx-auto px-6 lg:px-12">
+          <div className="max-w-350 mx-auto px-6 lg:px-12">
             {/* ── TOP ROW: EDITOR + PREVIEW */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 mb-16">
 
               {/* EDITOR */}
               <div>
-                <div className="mb-6">
+                <div className="mb-4">
                   <h2
                     className="text-xl font-bold uppercase tracking-wider mb-2"
                     style={{ color: 'var(--text)' }}
@@ -271,7 +271,7 @@ export default function Home() {
                     className="text-xs"
                     style={{ color: 'var(--text-muted)' }}
                   >
-                    Construct recursive logic for complex data filtering.
+                    Build recursive functions to handle complex data filtering.
                   </p>
                 </div>
                 <QueryBuilder />
@@ -279,7 +279,7 @@ export default function Home() {
 
               {/* PREVIEW */}
               <div>
-                <div className="mb-6">
+                <div className="mb-4">
                   <h2
                     className="text-xl font-bold uppercase tracking-wider mb-2"
                     style={{ color: 'var(--text)' }}
@@ -299,7 +299,7 @@ export default function Home() {
 
             {/* Divider */}
             <div
-              className="mb-12"
+              className="my-10"
               style={{
                 height: '1px',
                 background: 'var(--border)',
@@ -307,7 +307,7 @@ export default function Home() {
             />
 
             {/* ── INSPECTION */}
-            <div className="mb-8">
+            <div className="mb-12">
               <h2
                 className="text-xl font-bold uppercase tracking-wider mb-2"
                 style={{ color: 'var(--text)' }}
@@ -315,10 +315,10 @@ export default function Home() {
                 Inspection
               </h2>
               <p
-                className="text-xs mb-8"
+                className="text-xs mb-6"
                 style={{ color: 'var(--text-muted)' }}
               >
-                Validate your query against live simulated data.
+                Test query on simulated data.
               </p>
               <ResultsPanel />
             </div>
@@ -331,7 +331,7 @@ export default function Home() {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -8 }}
                   transition={{ duration: 0.2 }}
-                  className="mb-8"
+                  className="mb-12"
                 >
                   <div
                     className="mb-5"
@@ -369,19 +369,19 @@ export default function Home() {
           background: 'var(--bg-surface)',
         }}
       >
-        <div className="max-w-275 mx-auto px-6 lg:px-12">
+        <div className="max-w-350 mx-auto px-6 lg:px-12">
           <div className="flex items-center justify-between">
             <span
               className="text-xs uppercase tracking-widest"
               style={{ color: 'var(--text-muted)' }}
             >
-              High Precision Query Builder · Built for Performance
+              Query Craft · Filters like a pro
             </span>
             <span
               className="text-xs"
               style={{ color: 'var(--accent)' }}
             >
-              122 tests passing
+              Jay Tech © 2026
             </span>
           </div>
         </div>
