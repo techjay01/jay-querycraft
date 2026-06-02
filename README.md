@@ -8,7 +8,7 @@ A highly interactive visual query builder that allows users to construct complex
 
 ## Screenshots
 
-> Coming Soon...
+![Screenshot of Live App](/querycraft/public/queryy.png)
 
 ---
 
