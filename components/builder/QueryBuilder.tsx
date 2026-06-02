@@ -1,7 +1,7 @@
 // components/builder/QueryBuilder.tsx
 'use client'
 
-import { useCallback, useRef } from 'react'
+import { useCallback, useRef, useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { AlertTriangle, CheckCircle2 } from 'lucide-react'
 import { useQueryStore } from '@/store/queryStore'
@@ -27,11 +27,30 @@ export default function QueryBuilder() {
   } = useQueryStore()
 
   const { savePreset } = useHistoryStore()
+  const [showPresetModal, setShowPresetModal] = useState(false)
+  const [presetName, setPresetName] = useState('')
+  const [presetDescription, setPresetDescription] = useState('')
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const hasErrors = validationErrors.some(e => e.severity === 'error')
   const hasWarnings = validationErrors.some(e => e.severity === 'warning')
   const isValid = validationErrors.length === 0
+
+  useEffect(() => {
+    const handleEsc = (e: KeyboardEvent) => {
+        if (e.key === 'Escape') {
+        setPresetName('')
+        setPresetDescription('')
+        setShowPresetModal(false)
+        }
+    }
+
+    window.addEventListener('keydown', handleEsc)
+
+    return () => {
+        window.removeEventListener('keydown', handleEsc)
+    }
+  }, [])
 
   // ── Export query as JSON file
   const handleExport = useCallback(() => {
@@ -78,13 +97,36 @@ export default function QueryBuilder() {
   }, [importQuery])
 
   // ── Save as preset
-  const handleSavePreset = useCallback(() => {
+//   const handleSavePreset = useCallback(() => {
+//     if (!selectedSchema) return
+//     const name = prompt('Enter preset name:')
+//     if (!name?.trim()) return
+//     const description = prompt('Enter preset description (optional):') ?? ''
+//     savePreset(name.trim(), description, rootGroup, selectedSchema.id)
+//   }, [rootGroup, selectedSchema, savePreset])
+
+    const handleSavePreset = useCallback(() => {
     if (!selectedSchema) return
-    const name = prompt('Enter preset name:')
-    if (!name?.trim()) return
-    const description = prompt('Enter preset description (optional):') ?? ''
-    savePreset(name.trim(), description, rootGroup, selectedSchema.id)
-  }, [rootGroup, selectedSchema, savePreset])
+
+    if (!presetName.trim()) return
+
+    savePreset(
+        presetName.trim(),
+        presetDescription.trim(),
+        rootGroup,
+        selectedSchema.id
+    )
+
+    setPresetName('')
+    setPresetDescription('')
+    setShowPresetModal(false)
+    }, [
+    presetName,
+    presetDescription,
+    rootGroup,
+    selectedSchema,
+    savePreset,
+    ])
 
   // ── Validate on demand
   const handleValidate = useCallback(() => {
@@ -231,7 +273,11 @@ active:scale-[0.98]
 
             {isDirty && (
                 <button
-                onClick={handleSavePreset}
+                onClick={() => {
+                setPresetName('')
+                setPresetDescription('')
+                setShowPresetModal(true)
+                }}
                 className="
 text-xs px-3 py-1.5 rounded border
 uppercase tracking-wider
@@ -255,6 +301,113 @@ active:scale-[0.98]
             )}
 
         </div>
+
+        {showPresetModal && (
+        <div
+            className="fixed inset-0 z-50 flex items-center justify-center"
+            style={{
+            background: 'rgba(0,0,0,0.5)',
+            backdropFilter: 'blur(4px)',
+            }}
+            onClick={() => {
+                setPresetName('')
+                setPresetDescription('')
+                setShowPresetModal(false)
+            }}
+        >
+            <motion.div
+                initial={{ opacity: 0, scale: 0.96, y: 8 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                transition={{ duration: 0.15 }}
+                onClick={(e) => e.stopPropagation()}
+                className="w-full max-w-md rounded-xl border p-5"
+            style={{
+                background: 'var(--bg-card)',
+                borderColor: 'var(--border)',
+            }}
+            >
+                <h3
+                    className="text-sm font-bold uppercase tracking-wider mb-4"
+                    style={{ color: 'var(--text)' }}
+                >
+                    Save Preset
+                </h3>
+
+                <div className="flex flex-col gap-3">
+                    <input
+                    value={presetName}
+                    onChange={e => setPresetName(e.target.value)}
+                    placeholder="Preset name"
+                    className="px-3 py-2 rounded border text-sm"
+                    style={{
+                        background: 'var(--bg-input)',
+                        borderColor: 'var(--border)',
+                        color: 'var(--text)',
+                    }}
+                    />
+
+                    <textarea
+                    value={presetDescription}
+                    onChange={e => setPresetDescription(e.target.value)}
+                    placeholder="Description (optional)"
+                    rows={3}
+                    className="px-3 py-2 rounded border text-sm resize-none"
+                    style={{
+                        background: 'var(--bg-input)',
+                        borderColor: 'var(--border)',
+                        color: 'var(--text)',
+                    }}
+                    />
+                </div>
+
+                <div className="flex justify-end gap-2 mt-5">
+                    <button
+                        onClick={() => setShowPresetModal(false)}
+                        className="
+                            px-3 py-2 rounded border text-xs uppercase tracking-wider
+                            transition-all duration-200
+                            hover:bg-(--bg-hover)
+                            hover:text-(--text)
+                            hover:border-(--border-light)
+                            hover:-translate-y-px
+                            active:translate-y-0
+                            active:scale-[0.98]
+                        "
+                        style={{
+                            borderColor: 'var(--border)',
+                            color: 'var(--text-secondary)',
+                            background: 'var(--bg-input)',
+                        }}
+                        >
+                        Cancel
+                    </button>
+
+                    <button
+                    onClick={handleSavePreset}
+                    disabled={!presetName.trim()}
+                    className="
+                        px-3 py-2 rounded text-xs uppercase tracking-wider font-bold
+                        transition-all duration-200
+                        hover:-translate-y-px
+                        hover:brightness-110
+                        active:translate-y-0
+                        active:scale-[0.98]
+                        disabled:opacity-50
+                        disabled:cursor-not-allowed
+                        disabled:hover:translate-y-0
+                    "
+                    style={{
+                        background: 'var(--accent)',
+                        color: 'var(--accent-fg)',
+                    }}
+                    >
+                    Save
+                    </button>
+                </div>
+            </motion.div>
+        </div>
+        )}
+
     </div>
   )
 }
