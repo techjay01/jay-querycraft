@@ -66,7 +66,7 @@ const HistoryItem = memo(({
       className="rounded-lg border overflow-hidden"
       style={{
         background: 'var(--bg-card)',
-        borderColor: 'var(--border-primary)',
+        borderColor: 'var(--border)',
       }}
     >
       {/* Main row */}
@@ -179,7 +179,7 @@ const HistoryItem = memo(({
             <div
               className="px-3 py-2 border-t"
               style={{
-                borderColor: 'var(--border-primary)',
+                borderColor: 'var(--border)',
                 background: 'var(--bg-tertiary)',
               }}
             >
@@ -227,7 +227,7 @@ const PresetItem = memo(({
       className="flex items-center gap-2 px-3 py-2 rounded-lg border"
       style={{
         background: 'var(--bg-card)',
-        borderColor: 'var(--border-primary)',
+        borderColor: 'var(--border)',
       }}
     >
       {/* Icon */}
@@ -398,6 +398,7 @@ const QueryHistory = memo(() => {
                     : 'transparent',
                   color: 'var(--text-muted)',
                   fontSize: '10px',
+                  border: '1px solid var(--border)',
                 }}
               >
                 {tab.count}

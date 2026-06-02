@@ -124,12 +124,6 @@ const ResultsPanel = memo(() => {
           <span className="text-xs font-bold uppercase tracking-wider" style={{ color: 'var(--text)' }}>
             Query Inspection
           </span>
-          <div className="flex items-center gap-1">
-            <div className="w-1.5 h-1.5 rounded-full" style={{ background: 'var(--success)' }} />
-            <span className="text-xs uppercase tracking-widest" style={{ color: 'var(--success)', fontSize: '9px' }}>
-              Connected to Simulator
-            </span>
-          </div>
         </div>
 
         {executionResult && (

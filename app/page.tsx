@@ -1,59 +1,70 @@
 // app/page.tsx
 'use client'
 
-import { useState, useCallback } from 'react'
+import { useRouter } from 'next/navigation'
 import Image from 'next/image'
-import { AnimatePresence, motion } from 'framer-motion'
-import { Moon, Sun, ChevronDown } from 'lucide-react'
-import { MOCK_SCHEMAS } from '@/lib/schemas'
-import { useQueryStore } from '@/store/queryStore'
-import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts'
-import { ThemeMode } from '@/types/query'
-import QueryBuilder from '@/components/builder/QueryBuilder'
-import QueryPreview from '@/components/preview/QueryPreview'
-import ResultsPanel from '@/components/results/ResultsPanel'
-import QueryHistory from '@/components/history/QueryHistory'
-import ShortcutsPanel from '@/components/ui/ShortcutsPanel'
-import StatsBar from '@/components/ui/StatsBar'
+import { Database, Zap, GitBranch, Code2, Shield, BarChart3, ArrowRight, CheckCircle } from 'lucide-react'
 
-export default function Home() {
-  const { selectedSchema, setSchema } = useQueryStore()
-  const [theme, setTheme] = useState<ThemeMode>('dark')
-  const [showHistory, setShowHistory] = useState(false)
-  const [showShortcuts, setShowShortcuts] = useState(false)
-  const [showMobileMenu, setShowMobileMenu] = useState(false)
+const features = [
+  {
+    icon: GitBranch,
+    title: 'Recursive Nesting',
+    desc: 'Build unlimited nested condition groups with AND/OR logic.',
+  },
+  {
+    icon: Code2,
+    title: 'Multi-Format Output',
+    desc: 'Generate SQL, MongoDB and GraphQL queries simultaneously.',
+  },
+  {
+    icon: Zap,
+    title: 'Live Preview',
+    desc: 'Query output updates in real time as you build conditions.',
+  },
+  {
+    icon: Database,
+    title: 'Schema-Driven',
+    desc: 'UI adapts dynamically based on your selected data source.',
+  },
+  {
+    icon: BarChart3,
+    title: 'Query Execution',
+    desc: 'Filter live simulated datasets and inspect results instantly.',
+  },
+  {
+    icon: Shield,
+    title: 'Validation Engine',
+    desc: 'Prevents invalid queries with inline error surfacing.',
+  },
+]
 
-  const handleToggleTheme = useCallback(() => {
-    setTheme(prev => {
-      const next = prev === 'dark' ? 'light' : 'dark'
-      document.documentElement.setAttribute('data-theme', next)
-      return next
-    })
-  }, [])
+const highlights = [
+  '122 tests passing',
+  'Drag and drop reordering',
+  'Import / Export JSON',
+  'Query history and presets',
+  'Dark and light mode',
+  'Keyboard shortcuts',
+]
 
-  useKeyboardShortcuts({
-    onToggleHistory: () => setShowHistory(p => !p),
-    onToggleTheme: handleToggleTheme,
-  })
+export default function Landing() {
+  const router = useRouter()
 
   return (
     <div
       className="min-h-screen flex flex-col"
-      style={{ background: 'var(--bg)', color: 'var(--text)' }}
+      style={{ background: 'var(--bg)', color: 'var(--text)', fontFamily: 'var(--font-mono)' }}
     >
-      {/* ── HEADER */}
+      {/* Header */}
       <header
-        className="border-b shrink-0 sticky top-0 z-50"
-        style={{
-          background: 'var(--bg-surface)',
-          borderColor: 'var(--border)',
-          backdropFilter: 'blur(8px)',
-        }}
+        className="border-b"
+        style={{ background: 'var(--bg-surface)', borderColor: 'var(--border)' }}
       >
-        <div className="h-16 max-w-350 mx-auto px-4 sm:px-6 lg:px-12 flex items-center justify-between flex-wrap gap-2">
-
-          {/* Logo */}
-          <div className="flex items-center gap-3 -mt-0.5">
+        <div
+          className="flex items-center justify-between h-14"
+          style={{ maxWidth: '1100px', margin: '0 auto', padding: '0 48px' }}
+        >
+          <div className="flex items-center gap-3">
             <div
               className="w-12 h-12 rounded-lg flex items-center justify-center font-bold text-sm"
             >
@@ -65,303 +76,172 @@ export default function Home() {
               />
             </div>
             <div>
-              <div
-                className="font-bold text-[20px] tracking-tight"
-                style={{ color: 'var(--text)' }}
-              >
+              <div className="font-bold text-[20px]" style={{ color: 'var(--text)' }}>
                 QueryCraft
               </div>
-              <div
-                className="text-xs uppercase tracking-widest"
-                style={{ color: 'var(--text-muted)', fontSize: '9px' }}
-              >
-                Filters like a pro
+              <div className="text-xs uppercase tracking-widest" style={{ color: 'var(--text-muted)', fontSize: '9px' }}>
+                Query Engine v1.0
               </div>
             </div>
           </div>
 
-          {/* Right actions */}
-          <div className="flex items-center gap-2">
-
-            {/* Desktop actions */}
-            <div className="hidden sm:flex items-center gap-2">
-              
-              {/* Schema selector */}
-              <div className="flex items-center gap-2 shrink-0">
-                <span className="text-xs uppercase tracking-wider hidden sm:block"
-                  style={{ color: 'var(--text-muted)' }}>
-                  Source
-                </span>
-
-                <div className="relative group">
-                  <select
-                    value={selectedSchema?.id ?? ''}
-                    onChange={e => setSchema(e.target.value)}
-                    className="
-                      w-full px-3 py-1.5 pr-8 rounded text-xs uppercase tracking-wider
-                      border border-(--border)
-                      bg-(--bg-input)
-                      text-(--text)
-                      font-mono
-                      cursor-pointer
-                      transition-all duration-200
-                      hover:border-(--border-light)
-                      focus:border-(--accent)
-                      focus:outline-none
-                      "
-                    style={{
-                      border: '1px solid var(--border)',
-                      fontFamily: 'var(--font-mono)',
-                    }}
-                  >
-                    {MOCK_SCHEMAS.map(s => (
-                      <option key={s.id} value={s.id}>
-                        {s.name}
-                      </option>
-                    ))}
-                  </select>
-
-                  <div
-                    className="
-                      absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none
-                      transition-colors duration-200
-                      text-(--text-muted)
-                      group-hover:text-(--text)
-                    "
-                  >
-                    <ChevronDown size={14} />
-                  </div>
-                </div>
-              </div>
-
-              <div className="w-px h-5" style={{ background: 'var(--border)' }} />
-
-              <button
-                onClick={() => {
-                  setShowHistory(p => !p)
-                  setShowMobileMenu(false)
-                }}
-                className="px-3 py-1.5 rounded text-xs uppercase tracking-wider border transition-all duration-200 active:scale-[0.98]"
-                style={{
-                  background: showHistory
-                    ? 'var(--accent-subtle)'
-                    : 'transparent',
-                  color: showHistory
-                    ? 'var(--accent)'
-                    : 'var(--text-muted)',
-                  border: `1px solid ${
-                    showHistory ? 'var(--accent-border)' : 'var(--border)'
-                  }`,
-                }}
-                onMouseEnter={(e) => {
-                  if (!showHistory) {
-                    (e.currentTarget as HTMLButtonElement).style.background = 'var(--bg-hover)'
-                    ;(e.currentTarget as HTMLButtonElement).style.color = 'var(--text)'
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (!showHistory) {
-                    (e.currentTarget as HTMLButtonElement).style.background = 'transparent'
-                    ;(e.currentTarget as HTMLButtonElement).style.color = 'var(--text-muted)'
-                  }
-                }}
-              >
-                History
-              </button>
-
-              <button
-                onClick={() => {
-                  setShowShortcuts(p => !p)
-                  setShowMobileMenu(false)
-                }}
-                className="px-3 py-1.5 rounded text-xs uppercase tracking-wider border transition-all duration-200 active:scale-[0.98]"
-                style={{
-                  background: 'transparent',
-                  color: 'var(--text-muted)',
-                  border: '1px solid var(--border)',
-                }}
-                onMouseEnter={(e) => {
-                  (e.currentTarget as HTMLButtonElement).style.background = 'var(--bg-hover)'
-                  ;(e.currentTarget as HTMLButtonElement).style.color = 'var(--text)'
-                }}
-                onMouseLeave={(e) => {
-                  (e.currentTarget as HTMLButtonElement).style.background = 'transparent'
-                  ;(e.currentTarget as HTMLButtonElement).style.color = 'var(--text-muted)'
-                }}
-              >
-                Shortcuts
-              </button>
-
-              <button
-                onClick={() => {
-                  handleToggleTheme()
-                  setShowMobileMenu(false)
-                }}
-                className="w-8 h-8 rounded flex items-center justify-center border transition-all duration-200 active:scale-[0.95]"
-                style={{
-                  background: 'transparent',
-                  color: 'var(--text-muted)',
-                  border: '1px solid var(--border)',
-                }}
-                onMouseEnter={(e) => {
-                  (e.currentTarget as HTMLButtonElement).style.background = 'var(--bg-hover)'
-                  ;(e.currentTarget as HTMLButtonElement).style.color = 'var(--text)'
-                }}
-                onMouseLeave={(e) => {
-                  (e.currentTarget as HTMLButtonElement).style.background = 'transparent'
-                  ;(e.currentTarget as HTMLButtonElement).style.color = 'var(--text-muted)'
-                }}
-              >
-                {theme === 'dark' ? <Sun size={13} /> : <Moon size={13} />}
-              </button>
-            </div>
-
-            {/* Mobile hamburger (ALWAYS visible on mobile) */}
-            <button
-              onClick={() => setShowMobileMenu(p => !p)}
-              className="block sm:hidden w-8 h-8 items-center justify-center border border-(--border) rounded transition-all duration-200 hover:bg-(--bg-hover) hover:text-(--text) active:scale-[0.95]"
-            >
-              ☰
-            </button>
-
-          </div>
+          <button
+            onClick={() => router.push('/builder')}
+            className="flex items-center gap-2 px-4 py-2 rounded text-xs
+              font-bold uppercase tracking-wider transition-all duration-150
+              hover:opacity-90"
+            style={{
+              background: 'var(--accent)',
+              color: 'var(--accent-fg)',
+            }}
+          >
+            Launch Builder
+            <ArrowRight size={13} />
+          </button>
         </div>
       </header>
 
-      {/* ── STATS BAR */}
-      <div
-        className="border-b shrink-0"
-        style={{
-          background: 'var(--bg-surface)',
-          borderColor: 'var(--border)',
-        }}
+      {/* Hero */}
+      <section
+        className="flex-1 flex flex-col items-center justify-center text-center py-24 px-6"
+        style={{ maxWidth: '800px', margin: '0 auto' }}
       >
-        <div className="max-w-350 mx-auto px-6 lg:px-12">
-          <div className="flex items-center gap-4 py-2">
-            <StatsBar />
-          </div>
-        </div>
-      </div>
-
-      {/* ── SHORTCUTS MODAL */}
-      <ShortcutsPanel
-        isOpen={showShortcuts}
-        onClose={() => setShowShortcuts(false)}
-      />
-
-      {/* ── MAIN CONTENT */}
-      <main className="flex-1">
+        {/* Badge */}
         <div
-          className="py-16"
+          className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs
+            uppercase tracking-wider mb-8"
+          style={{
+            background: 'var(--accent-subtle)',
+            border: '1px solid var(--accent-border)',
+            color: 'var(--accent)',
+          }}
         >
-          <div className="max-w-350 mx-auto px-6 lg:px-12">
-            {/* ── TOP ROW: EDITOR + PREVIEW */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 mb-16 items-start">
-
-              {/* EDITOR */}
-              <div>
-                <div className="mb-4">
-                  <h2
-                    className="text-xl font-bold uppercase tracking-wider mb-2"
-                    style={{ color: 'var(--text)' }}
-                  >
-                    Editor
-                  </h2>
-                  <p
-                    className="text-xs"
-                    style={{ color: 'var(--text-muted)' }}
-                  >
-                    Build recursive functions to handle complex data filtering.
-                  </p>
-                </div>
-                <QueryBuilder />
-              </div>
-
-              {/* PREVIEW */}
-              <div className="flex flex-col" style={{ height: '100%' }}>
-                <div className="mb-4">
-                  <h2
-                    className="text-xl font-bold uppercase tracking-wider mb-2"
-                    style={{ color: 'var(--text)' }}
-                  >
-                    Preview
-                  </h2>
-                  <p
-                    className="text-xs"
-                    style={{ color: 'var(--text-muted)' }}
-                  >
-                    Generated syntax output.
-                  </p>
-                </div>
-                <QueryPreview />
-              </div>
-            </div>
-
-            {/* Divider */}
-            <div
-              className="my-10"
-              style={{
-                height: '1px',
-                background: 'var(--border)',
-              }}
-            />
-
-            {/* ── INSPECTION */}
-            <div className="mb-12">
-              <h2
-                className="text-xl font-bold uppercase tracking-wider mb-2"
-                style={{ color: 'var(--text)' }}
-              >
-                Inspection
-              </h2>
-              <p
-                className="text-xs mb-6"
-                style={{ color: 'var(--text-muted)' }}
-              >
-                Test query on simulated data.
-              </p>
-              <ResultsPanel />
-            </div>
-
-            {/* ── HISTORY */}
-            <AnimatePresence>
-              {showHistory && (
-                <motion.div
-                  initial={{ opacity: 0, y: -8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -8 }}
-                  transition={{ duration: 0.2 }}
-                  className="mb-12"
-                >
-                  <div
-                    className="mb-5"
-                    style={{
-                      height: '1px',
-                      background: 'var(--border)',
-                    }}
-                  />
-                  <h2
-                    className="text-lg font-bold uppercase tracking-wider mb-1"
-                    style={{ color: 'var(--text)' }}
-                  >
-                    History
-                  </h2>
-                  <p
-                    className="text-xs mb-6"
-                    style={{ color: 'var(--text-muted)' }}
-                  >
-                    Previously executed queries and saved presets.
-                  </p>
-                  <QueryHistory />
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-
+          <div className="w-1.5 h-1.5 rounded-full" style={{ background: 'var(--accent)' }} />
+          Visual Query Builder
         </div>
-      </main>
 
-      {/* ── FOOTER */}
+        {/* Title */}
+        <h1
+          className="font-bold uppercase tracking-tight mb-6"
+          style={{ color: 'var(--text)', fontSize: 'clamp(32px, 5vw, 56px)', lineHeight: 1.1 }}
+        >
+          Build Complex Queries.
+          <br />
+          <span style={{ color: 'var(--accent)' }}>Visually.</span>
+        </h1>
+
+        {/* Subtitle */}
+        <p
+          className="text-sm mb-10 leading-relaxed"
+          style={{ color: 'var(--text-muted)', maxWidth: '520px' }}
+        >
+          Construct recursive database queries through a graphical interface.
+          No raw syntax required. Supports SQL, MongoDB and GraphQL output.
+        </p>
+
+        {/* CTA */}
+        <div className="flex items-center gap-3 flex-wrap justify-center">
+          <button
+            onClick={() => router.push('/builder')}
+            className="flex items-center gap-2 px-6 py-3 rounded text-sm
+              font-bold uppercase tracking-wider transition-all duration-150
+              hover:opacity-90 hover:scale-105"
+            style={{
+              background: 'var(--accent)',
+              color: 'var(--accent-fg)',
+            }}
+          >
+            Start Building
+            <ArrowRight size={14} />
+          </button>
+
+          <a
+            href="https://github.com/techjay01/jay-querycraft"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 px-6 py-3 rounded text-sm
+              font-bold uppercase tracking-wider transition-all duration-150"
+            style={{
+              background: 'transparent',
+              color: 'var(--text-secondary)',
+              border: '1px solid var(--border)',
+            }}
+          >
+            View on GitHub
+          </a>
+        </div>
+      </section>
+
+      {/* Divider */}
+      <div style={{ height: '1px', background: 'var(--border)', margin: '0 48px' }} />
+
+      {/* Features */}
+      <section className="py-20 px-6">
+        <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
+          <h2
+            className="text-xs uppercase tracking-widest text-center mb-12"
+            style={{ color: 'var(--text-muted)' }}
+          >
+            Everything you need
+          </h2>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {features.map(f => (
+              <div
+                key={f.title}
+                className="p-6 rounded-lg border"
+                style={{
+                  background: 'var(--bg-surface)',
+                  borderColor: 'var(--border)',
+                }}
+              >
+                <div
+                  className="w-8 h-8 rounded-lg flex items-center justify-center mb-4"
+                  style={{
+                    background: 'var(--accent-subtle)',
+                    border: '1px solid var(--accent-border)',
+                  }}
+                >
+                  <f.icon size={15} style={{ color: 'var(--accent)' }} />
+                </div>
+                <h3
+                  className="text-xs font-bold uppercase tracking-wider mb-2"
+                  style={{ color: 'var(--text)' }}
+                >
+                  {f.title}
+                </h3>
+                <p className="text-xs leading-relaxed" style={{ color: 'var(--text-muted)' }}>
+                  {f.desc}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Divider */}
+      <div style={{ height: '1px', background: 'var(--border)', margin: '0 48px' }} />
+
+      {/* Highlights */}
+      <section className="py-16 px-6">
+        <div
+          className="flex flex-wrap items-center justify-center gap-4"
+          style={{ maxWidth: '1100px', margin: '0 auto' }}
+        >
+          {highlights.map(h => (
+            <div
+              key={h}
+              className="flex items-center gap-2 text-xs uppercase tracking-wider"
+              style={{ color: 'var(--text-secondary)' }}
+            >
+              <CheckCircle size={13} style={{ color: 'var(--accent)' }} />
+              {h}
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Footer */}
       <footer
         className="border-t py-4"
         style={{
@@ -386,141 +266,6 @@ export default function Home() {
           </div>
         </div>
       </footer>
-      
-      {showMobileMenu && (
-        <div className="fixed inset-0 z-50 sm:hidden">
-          
-          {/* Backdrop */}
-          <div
-            className="absolute inset-0 bg-black/40"
-            onClick={() => setShowMobileMenu(false)}
-          />
-
-          {/* Drawer */}
-          <div className="absolute right-0 top-0 h-full w-70 bg-(--bg-surface) border-l border-(--border) p-4 flex flex-col gap-4">
-          
-            <div className="flex items-center justify-between mb-2">
-              <div
-                className="px-3 text-xs uppercase tracking-widest"
-                style={{ color: 'var(--text-muted)' }}
-              >
-                Menu
-              </div>
-
-              <button
-                onClick={() => setShowMobileMenu(false)}
-                className="
-                  w-8 h-8 flex items-center justify-center rounded
-                  border border-(--border)
-                  transition-all duration-200
-                  hover:bg-(--bg-hover)
-                  active:scale-[0.95]
-                "
-                style={{
-                  border: '1px solid var(--border)',
-                  color: 'var(--text-muted)',
-                }}
-              >
-                ✕
-              </button>
-            </div>
-
-            {/* Source */}
-            <div className="relative group rounded">
-              <select
-                value={selectedSchema?.id ?? ''}
-                onChange={e => setSchema(e.target.value)}
-                className="
-                  w-full px-3 py-2 pr-8
-                  rounded text-xs uppercase tracking-wider
-                  border border-(--border)
-                  bg-(--bg-input)
-                  text-(--text)
-                  font-mono
-                  cursor-pointer
-                  transition-all duration-200
-
-                  hover:border-(--border-light)
-                  active:scale-[0.99]
-
-                  focus:border-(--accent)
-                  focus:outline-none
-                "
-              >
-                {MOCK_SCHEMAS.map(s => (
-                  <option key={s.id} value={s.id}>
-                    {s.name}
-                  </option>
-                ))}
-              </select>
-
-              <div
-                className="
-                  absolute right-3 top-1/2 -translate-y-1/2
-                  pointer-events-none
-                  text-(--text-muted)
-                  transition-colors duration-200
-                  group-hover:text-(--text)
-                "
-              >
-                <ChevronDown size={14} />
-              </div>
-            </div>
-
-            <button
-              onClick={() => {
-                setShowHistory(p => !p)
-                setShowMobileMenu(false)
-              }}
-              className="
-                text-left w-full px-3 py-2 rounded text-xs uppercase tracking-wider
-                border border-transparent
-                transition-all duration-200
-                hover:bg-(--bg-hover)
-                hover:border-(--border)
-                active:scale-[0.98]
-              "
-            >
-              History
-            </button>
-
-            <button
-              onClick={() => {
-                setShowShortcuts(p => !p)
-                setShowMobileMenu(false)
-              }}
-              className="
-                text-left w-full px-3 py-2 rounded text-xs uppercase tracking-wider
-                border border-transparent
-                transition-all duration-200
-                hover:bg-(--bg-hover)
-                hover:border-(--border)
-                active:scale-[0.98]
-              "
-            >
-              Shortcuts
-            </button>
-
-            <button
-              onClick={() => {
-                handleToggleTheme()
-                setShowMobileMenu(false)
-              }}
-              className="
-                text-left w-full px-3 py-2 rounded text-xs uppercase tracking-wider
-                border border-transparent
-                transition-all duration-200
-                hover:bg-(--bg-hover)
-                hover:border-(--border)
-                active:scale-[0.98]
-              "
-            >
-              Toggle Theme
-            </button>
-          </div>
-        </div>
-      )}
-
     </div>
   )
 }
