@@ -1,5 +1,6 @@
 // store/queryStore.ts
 import { create } from 'zustand'
+import { persist } from 'zustand/middleware'
 import { immer } from 'zustand/middleware/immer'
 import { nanoid } from 'nanoid'
 import {
@@ -190,198 +191,209 @@ const createInitialRootGroup = (): QueryGroup =>
 // ============================================
 
 export const useQueryStore = create<QueryStore>()(
-  immer((set, get) => ({
-    rootGroup: createInitialRootGroup(),
-    selectedSchema: MOCK_SCHEMAS[0],
-    outputFormat: 'sql',
-    validationErrors: [],
-    isExecuting: false,
-    executionResult: null,
-    isDirty: false,
+  persist(
+    immer((set, get) => ({
+        rootGroup: createInitialRootGroup(),
+        selectedSchema: MOCK_SCHEMAS[0],
+        outputFormat: 'sql',
+        validationErrors: [],
+        isExecuting: false,
+        executionResult: null,
+        isDirty: false,
 
-    // — Schema
-    setSchema: (schemaId) => {
-      set(state => {
-        const schema = MOCK_SCHEMAS.find(s => s.id === schemaId) ?? null
-        state.selectedSchema = schema
-        state.rootGroup = createInitialRootGroup()
-        state.validationErrors = []
-        state.executionResult = null
-        state.isDirty = false
-      })
-    },
-
-    // — Format
-    setOutputFormat: (format) => {
-      set(state => {
-        state.outputFormat = format
-      })
-    },
-
-    // — Add rule to a group
-    addRule: (groupId) => {
-      set(state => {
-        const field = state.selectedSchema?.fields[0]?.name ?? ''
-        const rule = createRule(field)
-        addNodeToGroup(state.rootGroup, groupId, rule)
-        state.isDirty = true
-      })
-    },
-
-    // — Remove rule
-    removeRule: (ruleId) => {
-      set(state => {
-        removeNode(state.rootGroup, ruleId)
-        state.isDirty = true
-      })
-    },
-
-    // — Update rule field
-    updateRuleField: (ruleId, field) => {
-      set(state => {
-        findAndUpdateRule(state.rootGroup, ruleId, rule => {
-          rule.field = field
-          // Reset operator and value when field changes
-          const schemaField = state.selectedSchema?.fields.find(
-            f => f.name === field
-          )
-          if (schemaField) {
-            rule.operator = 'equals'
-            rule.value = ''
-          }
-        })
-        state.isDirty = true
-      })
-    },
-
-    // — Update rule operator
-    updateRuleOperator: (ruleId, operator) => {
-      set(state => {
-        findAndUpdateRule(state.rootGroup, ruleId, rule => {
-          rule.operator = operator
-          rule.value = ''
-        })
-        state.isDirty = true
-      })
-    },
-
-    // — Update rule value
-    updateRuleValue: (ruleId, value) => {
-      set(state => {
-        findAndUpdateRule(state.rootGroup, ruleId, rule => {
-          rule.value = value
-        })
-        state.isDirty = true
-      })
-    },
-
-    // — Add nested group
-    addGroup: (parentGroupId) => {
-      set(state => {
-        const field = state.selectedSchema?.fields[0]?.name ?? ''
-        const newGroup = createGroup('AND', [createRule(field)])
-        addNodeToGroup(state.rootGroup, parentGroupId, newGroup)
-        state.isDirty = true
-      })
-    },
-
-    // — Remove group
-    removeGroup: (groupId) => {
-      set(state => {
-        removeNode(state.rootGroup, groupId)
-        state.isDirty = true
-      })
-    },
-
-    // — Toggle AND/OR
-    toggleGroupOperator: (groupId) => {
-      set(state => {
-        findAndUpdateGroup(state.rootGroup, groupId, group => {
-          group.logicalOperator =
-            group.logicalOperator === 'AND' ? 'OR' : 'AND'
-        })
-        state.isDirty = true
-      })
-    },
-
-    // — Collapse/expand group
-    toggleGroupCollapsed: (groupId) => {
-      set(state => {
-        findAndUpdateGroup(state.rootGroup, groupId, group => {
-          group.collapsed = !group.collapsed
-        })
-      })
-    },
-
-    // — Reorder nodes via drag and drop
-    reorderNodes: (groupId, fromIndex, toIndex) => {
-      set(state => {
-        reorderInGroup(state.rootGroup, groupId, fromIndex, toIndex)
-        state.isDirty = true
-      })
-    },
-
-    // — Validate
-    validateQueryTree: () => {
-      const { rootGroup, selectedSchema } = get()
-      const errors = validateQuery(rootGroup, selectedSchema)
-      set(state => {
-        state.validationErrors = errors
-      })
-      return errors
-    },
-
-    // — Execute
-    executeQueryTree: (options = {}) => {
-      const { rootGroup, selectedSchema, validateQueryTree } = get()
-
-      const errors = validateQueryTree()
-      if (errors.some(e => e.severity === 'error')) return
-
-      if (!selectedSchema) return
-
-      set(state => {
-        state.isExecuting = true
-      })
-
-      // Simulate async execution
-      setTimeout(() => {
-        const result = executeQuery(rootGroup, selectedSchema.id, {
-          page: options.page ?? 1,
-          pageSize: options.pageSize ?? 10,
-          sortField: options.sortField,
-          sortDirection: options.sortDirection ?? 'asc',
-        })
+        // — Schema
+        setSchema: (schemaId) => {
         set(state => {
-          state.executionResult = result
-          state.isExecuting = false
+            const schema = MOCK_SCHEMAS.find(s => s.id === schemaId) ?? null
+            state.selectedSchema = schema
+            state.rootGroup = createInitialRootGroup()
+            state.validationErrors = []
+            state.executionResult = null
+            state.isDirty = false
         })
-      }, 600)
-    },
+        },
 
-    // — Reset
-    resetQuery: () => {
-      set(state => {
-        state.rootGroup = createInitialRootGroup()
-        state.validationErrors = []
-        state.executionResult = null
-        state.isDirty = false
-      })
-    },
+        // — Format
+        setOutputFormat: (format) => {
+        set(state => {
+            state.outputFormat = format
+        })
+        },
 
-    // — Import
-    importQuery: (group) => {
-      set(state => {
-        state.rootGroup = group
-        state.validationErrors = []
-        state.executionResult = null
-        state.isDirty = true
-      })
-    },
+        // — Add rule to a group
+        addRule: (groupId) => {
+        set(state => {
+            const field = state.selectedSchema?.fields[0]?.name ?? ''
+            const rule = createRule(field)
+            addNodeToGroup(state.rootGroup, groupId, rule)
+            state.isDirty = true
+        })
+        },
 
-    // — Export
-    exportQuery: () => {
-      return get().rootGroup
-    },
-  }))
+        // — Remove rule
+        removeRule: (ruleId) => {
+        set(state => {
+            removeNode(state.rootGroup, ruleId)
+            state.isDirty = true
+        })
+        },
+
+        // — Update rule field
+        updateRuleField: (ruleId, field) => {
+        set(state => {
+            findAndUpdateRule(state.rootGroup, ruleId, rule => {
+            rule.field = field
+            // Reset operator and value when field changes
+            const schemaField = state.selectedSchema?.fields.find(
+                f => f.name === field
+            )
+            if (schemaField) {
+                rule.operator = 'equals'
+                rule.value = ''
+            }
+            })
+            state.isDirty = true
+        })
+        },
+
+        // — Update rule operator
+        updateRuleOperator: (ruleId, operator) => {
+        set(state => {
+            findAndUpdateRule(state.rootGroup, ruleId, rule => {
+            rule.operator = operator
+            rule.value = ''
+            })
+            state.isDirty = true
+        })
+        },
+
+        // — Update rule value
+        updateRuleValue: (ruleId, value) => {
+        set(state => {
+            findAndUpdateRule(state.rootGroup, ruleId, rule => {
+            rule.value = value
+            })
+            state.isDirty = true
+        })
+        },
+
+        // — Add nested group
+        addGroup: (parentGroupId) => {
+        set(state => {
+            const field = state.selectedSchema?.fields[0]?.name ?? ''
+            const newGroup = createGroup('AND', [createRule(field)])
+            addNodeToGroup(state.rootGroup, parentGroupId, newGroup)
+            state.isDirty = true
+        })
+        },
+
+        // — Remove group
+        removeGroup: (groupId) => {
+        set(state => {
+            removeNode(state.rootGroup, groupId)
+            state.isDirty = true
+        })
+        },
+
+        // — Toggle AND/OR
+        toggleGroupOperator: (groupId) => {
+        set(state => {
+            findAndUpdateGroup(state.rootGroup, groupId, group => {
+            group.logicalOperator =
+                group.logicalOperator === 'AND' ? 'OR' : 'AND'
+            })
+            state.isDirty = true
+        })
+        },
+
+        // — Collapse/expand group
+        toggleGroupCollapsed: (groupId) => {
+        set(state => {
+            findAndUpdateGroup(state.rootGroup, groupId, group => {
+            group.collapsed = !group.collapsed
+            })
+        })
+        },
+
+        // — Reorder nodes via drag and drop
+        reorderNodes: (groupId, fromIndex, toIndex) => {
+        set(state => {
+            reorderInGroup(state.rootGroup, groupId, fromIndex, toIndex)
+            state.isDirty = true
+        })
+        },
+
+        // — Validate
+        validateQueryTree: () => {
+        const { rootGroup, selectedSchema } = get()
+        const errors = validateQuery(rootGroup, selectedSchema)
+        set(state => {
+            state.validationErrors = errors
+        })
+        return errors
+        },
+
+        // — Execute
+        executeQueryTree: (options = {}) => {
+        const { rootGroup, selectedSchema, validateQueryTree } = get()
+
+        const errors = validateQueryTree()
+        if (errors.some(e => e.severity === 'error')) return
+
+        if (!selectedSchema) return
+
+        set(state => {
+            state.isExecuting = true
+        })
+
+        // Simulate async execution
+        setTimeout(() => {
+            const result = executeQuery(rootGroup, selectedSchema.id, {
+            page: options.page ?? 1,
+            pageSize: options.pageSize ?? 10,
+            sortField: options.sortField,
+            sortDirection: options.sortDirection ?? 'asc',
+            })
+            set(state => {
+            state.executionResult = result
+            state.isExecuting = false
+            })
+        }, 600)
+        },
+
+        // — Reset
+        resetQuery: () => {
+        set(state => {
+            state.rootGroup = createInitialRootGroup()
+            state.validationErrors = []
+            state.executionResult = null
+            state.isDirty = false
+        })
+        },
+
+        // — Import
+        importQuery: (group) => {
+        set(state => {
+            state.rootGroup = group
+            state.validationErrors = []
+            state.executionResult = null
+            state.isDirty = true
+        })
+        },
+
+        // — Export
+        exportQuery: () => {
+        return get().rootGroup
+        },
+    })),
+    {
+        name: 'query-store',
+
+        partialize: (state) => ({
+            rootGroup: state.rootGroup,
+            selectedSchema: state.selectedSchema,
+            outputFormat: state.outputFormat,
+        }),
+    }
+  )
 )
