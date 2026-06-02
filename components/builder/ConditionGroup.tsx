@@ -102,7 +102,6 @@ const ConditionGroup = memo(({
             ...sortableStyle,
             background: 'var(--bg-surface)',
             borderColor: 'var(--border)',
-            borderLeft: `2px solid ${borderColor}`,
             padding: isRoot ? '20px' : '16px',
         }}
         initial={{ opacity: 0, y: -4 }}
