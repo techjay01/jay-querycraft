@@ -2,7 +2,7 @@
 'use client'
 
 import { memo } from 'react'
-import { ChevronDown, ChevronRight, Plus, FolderPlus, Trash2 } from 'lucide-react'
+import { ChevronDown, ChevronRight, Plus, FolderPlus, Trash2, GripVertical } from 'lucide-react'
 import { LogicalOperator } from '@/types/query'
 
 interface GroupHeaderProps {
@@ -17,6 +17,8 @@ interface GroupHeaderProps {
   onAddRule: () => void
   onAddGroup: () => void
   onRemoveGroup: () => void
+  dragAttributes?: React.HTMLAttributes<HTMLButtonElement>
+  dragListeners?: React.HTMLAttributes<HTMLButtonElement>
 }
 
 const GroupHeader = memo(({
@@ -30,10 +32,25 @@ const GroupHeader = memo(({
   onAddRule,
   onAddGroup,
   onRemoveGroup,
+  dragAttributes,
+  dragListeners,
 }: GroupHeaderProps) => {
 
   return (
     <div className="flex items-center gap-2 flex-wrap">
+        {/* Drag handle — hidden for root */}
+        {!isRoot && (
+        <button
+            {...dragAttributes}
+            {...dragListeners}
+            className="cursor-grab active:cursor-grabbing p-1 rounded
+            transition-colors shrink-0"
+            style={{ color: 'var(--text-muted)' }}
+            aria-label="Drag group to reorder"
+        >
+            <GripVertical size={13} />
+        </button>
+        )}
 
       {/* Collapse toggle */}
       <button

@@ -114,11 +114,11 @@ const QueryPreview = memo(() => {
 
   return (
     <div
-      className="rounded-lg border overflow-hidden"
-      style={{
-        background: 'var(--bg-card)',
-        borderColor: 'var(--border)',
-      }}
+        className="rounded-lg border overflow-hidden flex flex-col h-full"
+        style={{
+            background: 'var(--bg-card)',
+            borderColor: 'var(--border)',
+        }}
     >
       {/* Header */}
       <div
@@ -188,6 +188,7 @@ const QueryPreview = memo(() => {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.12 }}
+          className="flex-1"
         >
           {!isDirty ? (
             <div
@@ -198,13 +199,14 @@ const QueryPreview = memo(() => {
             </div>
           ) : (
             <pre
-              className="p-6 text-xs overflow-auto leading-relaxed"
-              style={{
-                color: 'var(--text-secondary)',
-                fontFamily: 'var(--font-mono)',
-                maxHeight: '280px',
-                tabSize: 2,
-              }}
+                className="p-6 text-xs overflow-auto leading-relaxed"
+                style={{
+                    color: 'var(--text-secondary)',
+                    fontFamily: 'var(--font-mono)',
+                    minHeight: '200px',
+                    maxHeight: '600px',
+                    tabSize: 2,
+                }}
               dangerouslySetInnerHTML={{ __html: highlighted }}
             />
           )}
@@ -214,7 +216,7 @@ const QueryPreview = memo(() => {
       {/* Stats */}
       {isDirty && (
         <div
-          className="flex items-center justify-between px-4 py-2 border-t text-xs"
+          className="flex items-center justify-between px-4 py-2 border-t text-xs mt-auto"
           style={{
             borderColor: 'var(--border)',
             color: 'var(--text-muted)',

@@ -9,6 +9,7 @@ import { QueryRule, SchemaField, OperatorType } from '@/types/query'
 import { FIELD_TYPE_OPERATORS, OPERATOR_META } from '@/lib/schemas'
 import { useQueryStore } from '@/store/queryStore'
 import { getNodeErrors } from '@/lib/validators'
+import Select from '@/components/ui/Select'
 
 // ============================================
 // PROPS
@@ -50,38 +51,31 @@ const ValueInput = memo(({
 
   if (field?.type === 'enum' && field.enumOptions) {
     return (
-      <select
+        <Select
         value={String(rule.value ?? '')}
-        onChange={e => onValueChange(e.target.value)}
-        className={cls}
-        style={style}
-      >
-        <option value="">Select...</option>
-        {field.enumOptions.map(opt => (
-          <option key={opt.value} value={opt.value}
-            style={{ background: 'var(--bg-card)' }}
-          >
-            {opt.label}
-          </option>
-        ))}
-      </select>
+        onChange={onValueChange}
+        placeholder="Select value..."
+        options={field.enumOptions.map(opt => ({
+            value: opt.value,
+            label: opt.label,
+        }))}
+        />
     )
-  }
+    }
 
   if (field?.type === 'boolean') {
     return (
-      <select
+        <Select
         value={String(rule.value ?? '')}
-        onChange={e => onValueChange(e.target.value === 'true')}
-        className={cls}
-        style={style}
-      >
-        <option value="">Select...</option>
-        <option value="true" style={{ background: 'var(--bg-card)' }}>True</option>
-        <option value="false" style={{ background: 'var(--bg-card)' }}>False</option>
-      </select>
+        onChange={val => onValueChange(val === 'true')}
+        placeholder="Select..."
+        options={[
+            { value: 'true', label: 'True' },
+            { value: 'false', label: 'False' },
+        ]}
+        />
     )
-  }
+    }
 
   if (rule.operator === 'between' || rule.operator === 'date_between') {
     const vals = Array.isArray(rule.value) ? rule.value as [string, string] : ['', '']
@@ -190,14 +184,6 @@ const ConditionRule = memo(({
   ]
   const connectorColor = depthConnectors[depth % depthConnectors.length]
 
-  const selectStyle = {
-    color: 'var(--text)',
-    fontFamily: 'var(--font-mono)',
-    fontSize: '12px',
-    background: 'transparent',
-    width: '100%',
-  }
-
   return (
     <div
       ref={setNodeRef}
@@ -212,7 +198,7 @@ const ConditionRule = memo(({
 
       {/* Card */}
       <div
-        className="rounded-lg border overflow-hidden"
+        className="rounded-lg border"
         style={{
           background: 'var(--bg-card)',
           borderColor: hasError ? 'var(--danger-border)' : 'var(--border)',
@@ -270,54 +256,23 @@ const ConditionRule = memo(({
           </button>
 
           {/* Field */}
-          <div
-            className="rounded px-3 py-2"
-            style={{
-              background: 'var(--bg-input)',
-              border: '1px solid var(--border)',
-            }}
-          >
-            <select
-              value={rule.field}
-              onChange={e => handleFieldChange(e.target.value)}
-              style={{
-                ...selectStyle,
-                color: rule.field ? 'var(--text)' : 'var(--text-muted)',
-              }}
-            >
-              <option value="">Select field...</option>
-              {fields.map(f => (
-                <option key={f.name} value={f.name}
-                  style={{ background: 'var(--bg-card)' }}
-                >
-                  {f.label}
-                </option>
-              ))}
-            </select>
-          </div>
+        <Select
+            value={rule.field}
+            onChange={handleFieldChange}
+            placeholder="Select field..."
+            accentSelected={true}
+            options={fields.map(f => ({ value: f.name, label: f.label }))}
+        />
 
           {/* Operator */}
-          <div
-            className="rounded px-3 py-2"
-            style={{
-              background: 'var(--bg-input)',
-              border: '1px solid var(--border)',
-            }}
-          >
-            <select
-              value={rule.operator}
-              onChange={e => handleOperatorChange(e.target.value as OperatorType)}
-              style={selectStyle}
-            >
-              {allowedOperators.map(op => (
-                <option key={op} value={op}
-                  style={{ background: 'var(--bg-card)' }}
-                >
-                  {OPERATOR_META[op]?.label ?? op}
-                </option>
-              ))}
-            </select>
-          </div>
+        <Select
+            value={rule.operator}
+            onChange={val => handleOperatorChange(val as OperatorType)}
+            options={allowedOperators.map(op => ({
+                value: op,
+                label: OPERATOR_META[op]?.label ?? op,
+            }))}
+        />
 
           {/* Value */}
           <div
