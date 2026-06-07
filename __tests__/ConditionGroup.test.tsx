@@ -129,8 +129,8 @@ describe('ConditionGroup — rendering', () => {
 
   it('renders child rules', () => {
     renderConditionGroup()
-    const selects = screen.getAllByRole('combobox')
-    expect(selects.length).toBeGreaterThan(0)
+    expect(screen.getByRole('button', { name: /age/i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /greater than/i })).toBeInTheDocument()
   })
 
   it('renders correct condition count', () => {
@@ -304,7 +304,7 @@ describe('ConditionGroup — recursive rendering', () => {
       />
     )
 
-    expect(screen.getByText(/No conditions yet/)).toBeDefined()
+    expect(screen.getByText(/Empty Logical Group/i)).toBeInTheDocument()
   })
 })
 

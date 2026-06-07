@@ -81,17 +81,17 @@ const ValueInput = memo(({
     const vals = Array.isArray(rule.value) ? rule.value as [string, string] : ['', '']
     const t = rule.operator === 'date_between' ? 'date' : 'number'
     return (
-      <div className="flex items-center gap-2 w-full">
-        <input type={t} value={vals[0] ?? ''} placeholder="From"
-          onChange={e => onValueChange([e.target.value, vals[1] ?? ''])}
-          className={cls} style={style}
-        />
-        <span style={{ color: 'var(--text-muted)' }}>—</span>
-        <input type={t} value={vals[1] ?? ''} placeholder="To"
-          onChange={e => onValueChange([vals[0] ?? '', e.target.value])}
-          className={cls} style={style}
-        />
-      </div>
+      <div className="flex items-center gap-2 min-w-0 overflow-hidden">
+      <input type={t} value={vals[0] ?? ''} placeholder="From"
+        onChange={e => onValueChange([e.target.value, vals[1] ?? ''])}
+        className={`min-w-0 py-2 text-xs outline-none bg-transparent`} style={style}
+      />
+      <span style={{ color: 'var(--text-muted)' }}>—</span>
+      <input type={t} value={vals[1] ?? ''} placeholder="To"
+        onChange={e => onValueChange([vals[0] ?? '', e.target.value])}
+        className={`min-w-0 py-2 text-xs outline-none bg-transparent`} style={style}
+      />
+    </div>
     )
   }
 
@@ -184,6 +184,11 @@ const ConditionRule = memo(({
   ]
   const connectorColor = depthConnectors[depth % depthConnectors.length]
 
+  const isDropdown =
+    currentField?.type === 'enum' ||
+    currentField?.type === 'boolean'
+
+
   return (
     <div
       ref={setNodeRef}
@@ -198,109 +203,96 @@ const ConditionRule = memo(({
 
       {/* Card */}
       <div
-        className="rounded-lg border"
+        className="rounded-lg border overflow-x-auto"
         style={{
           background: 'var(--bg-card)',
           borderColor: hasError ? 'var(--danger-border)' : 'var(--border)',
         }}
       >
-        {/* Column labels */}
         <div
-            className="grid px-4 pt-3 pb-1.5"
-            style={{
-                gridTemplateColumns: '32px 1fr 1fr 1fr 32px',
-                gap: '12px',
-                borderBottom: '1px solid var(--border)',
-            }}
+          style={{
+            display: 'grid',
+            gridTemplateColumns: '32px 1fr 1fr 1fr 32px',
+            gap: '12px',
+            minWidth: '600px',
+          }}
         >
-          <div />
-          <span
-            className="text-xs uppercase tracking-widest"
-            style={{ color: 'var(--text-muted)', fontSize: '9px' }}
-          >
-            Field
-          </span>
-          <span
-            className="text-xs uppercase tracking-widest"
-            style={{ color: 'var(--text-muted)', fontSize: '9px' }}
-          >
-            Operator
-          </span>
-          <span
-            className="text-xs uppercase tracking-widest"
-            style={{ color: 'var(--text-muted)', fontSize: '9px' }}
-          >
-            Value
-          </span>
-          <div />
-        </div>
-
-        {/* Inputs row */}
-        <div
-            className="grid items-center px-4 py-2"
+          {/* Label row */}
+          <div className="px-4 pt-3 pb-1.5 col-span-5 grid"
             style={{
-                gridTemplateColumns: '32px 1fr 1fr 1fr 32px',
-                gap: '12px',
-            }}
-        >
-          {/* Drag handle */}
-          <button
-            {...attributes}
-            {...listeners}
-            className="flex items-center justify-center cursor-grab
-              active:cursor-grabbing rounded p-1 transition-colors"
-            style={{ color: 'var(--text-muted)' }}
-            aria-label="Drag to reorder"
-          >
-            <GripVertical size={13} />
-          </button>
-
-          {/* Field */}
-        <Select
-            value={rule.field}
-            onChange={handleFieldChange}
-            placeholder="Select field..."
-            accentSelected={true}
-            options={fields.map(f => ({ value: f.name, label: f.label }))}
-        />
-
-          {/* Operator */}
-        <Select
-            value={rule.operator}
-            onChange={val => handleOperatorChange(val as OperatorType)}
-            options={allowedOperators.map(op => ({
-                value: op,
-                label: OPERATOR_META[op]?.label ?? op,
-            }))}
-        />
-
-          {/* Value */}
-          <div
-            className="rounded px-3 py-1"
-            style={{
-              background: 'var(--bg-input)',
-              border: '1px solid var(--border)',
+              gridTemplateColumns: 'subgrid',
+              borderBottom: '1px solid var(--border)',
             }}
           >
-            <ValueInput
-              rule={rule}
-              field={currentField}
-              onValueChange={handleValueChange}
-            />
+            <div />
+            <span className="text-xs uppercase tracking-widest" style={{ color: 'var(--text-muted)', fontSize: '9px' }}>Field</span>
+            <span className="text-xs uppercase tracking-widest" style={{ color: 'var(--text-muted)', fontSize: '9px' }}>Operator</span>
+            <span className="text-xs uppercase tracking-widest" style={{ color: 'var(--text-muted)', fontSize: '9px' }}>Value</span>
+            <div />
           </div>
 
-          {/* Delete */}
-          <button
-            onClick={() => removeRule(rule.id)}
-            className="flex items-center justify-center rounded p-1
-              transition-colors"
-            style={{ color: 'var(--text-muted)' }}
-            onMouseEnter={e => (e.currentTarget.style.color = 'var(--danger)')}
-            onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-muted)')}
-            aria-label="Remove rule"
+          {/* Inputs row */}
+          <div className="px-4 py-2 col-span-5 grid items-center"
+            style={{ gridTemplateColumns: 'subgrid' }}
           >
-            <Trash2 size={13} />
-          </button>
+            {/* Drag handle */}
+            <button
+              {...attributes}
+              {...listeners}
+              className="flex items-center justify-center cursor-grab
+                active:cursor-grabbing rounded p-1 transition-colors"
+              style={{ color: 'var(--text-muted)', width: '32px', flexShrink: 0 }}
+              aria-label="Drag to reorder"
+            >
+              <GripVertical size={13} />
+            </button>
+
+            {/* Field */}
+            <Select
+              value={rule.field}
+              onChange={handleFieldChange}
+              placeholder="Select field..."
+              accentSelected={true}
+              options={fields.map(f => ({ value: f.name, label: f.label }))}
+            />
+
+            {/* Operator */}
+            <Select
+                value={rule.operator}
+                onChange={val => handleOperatorChange(val as OperatorType)}
+                options={allowedOperators.map(op => ({
+                    value: op,
+                    label: OPERATOR_META[op]?.label ?? op,
+                }))}
+            />
+
+            {/* Value */}
+            <div className={isDropdown ? '' : 'rounded px-3 py-1'}
+              style={isDropdown ? {} : {
+                background: 'var(--bg-input)',
+                border: '1px solid var(--border)',
+              }}
+            >
+              <ValueInput
+                rule={rule}
+                field={currentField}
+                onValueChange={handleValueChange}
+              />
+            </div>
+
+            {/* Delete */}
+            <button
+              onClick={() => removeRule(rule.id)}
+              className="flex items-center justify-center rounded p-1
+                transition-colors"
+              style={{ color: 'var(--text-muted)', width: '32px', flexShrink: 0 }}
+              onMouseEnter={e => (e.currentTarget.style.color = 'var(--danger)')}
+              onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-muted)')}
+              aria-label="Remove rule"
+            >
+              <Trash2 size={13} />
+            </button>
+          </div>
         </div>
       </div>
 

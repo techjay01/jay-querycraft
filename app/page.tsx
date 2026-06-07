@@ -94,7 +94,7 @@ export default function Landing() {
                 className="text-[9px] sm:text-xs uppercase tracking-widest truncate"
                 style={{ color: 'var(--text-muted)' }}
               >
-                Query Engine v1.0
+                FILTERS LIKE A PRO
               </div>
             </div>
           </div>

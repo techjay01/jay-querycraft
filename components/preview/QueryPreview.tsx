@@ -64,7 +64,7 @@ const highlight = (code: string, format: QueryOutputFormat): string => {
     return code
       .replace(
         /\b(SELECT|FROM|WHERE|AND|OR|NOT|IN|BETWEEN|LIKE|IS|NULL|TRUE|FALSE|REGEXP)\b/g,
-        '<span style="color:var(--accent);font-weight:600;">$1</span>'
+        '<span style="color:var(--accent);font-weight:bold;">$1</span>'
       )
       .replace(/`([^`]+)`/g, '<span style="color:#93c5fd;">$&</span>')
       .replace(/'([^']*)'/g, '<span style="color:var(--success);">$&</span>')
@@ -75,7 +75,7 @@ const highlight = (code: string, format: QueryOutputFormat): string => {
     return code
       .replace(
         /"\$[a-zA-Z]+"/g,
-        '<span style="color:var(--accent);font-weight:600;">$&</span>'
+        '<span style="color:var(--accent);font-weight:bold;">$&</span>'
       )
       .replace(/"([^$"][^"]*)"\s*:/g, '<span style="color:#93c5fd;">$&</span>')
       .replace(/:\s*"([^"]*)"/g, ': <span style="color:var(--success);">$&</span>')
@@ -85,11 +85,11 @@ const highlight = (code: string, format: QueryOutputFormat): string => {
 
   if (format === 'graphql') {
     return code
+      .replace(/\b([a-zA-Z_][a-zA-Z0-9_]*)\s*(?=:)/g, '<span style="color:#93c5fd;">$1</span>')
       .replace(
         /\b(query|mutation|filter|and|or|items|totalCount)\b/g,
-        '<span style="color:var(--accent);font-weight:600;">$1</span>'
+        '<span style="color:var(--accent);font-weight:bold;">$1</span>'
       )
-      .replace(/\b([a-zA-Z_][a-zA-Z0-9_]*)\s*(?=:)/g, '<span style="color:#93c5fd;">$1</span>')
       .replace(/:\s*"([^"]*)"/g, ': <span style="color:var(--success);">"$1"</span>')
       .replace(/:\s*(\d+\.?\d*)/g, ': <span style="color:#f9a8d4;">$1</span>')
   }

@@ -168,6 +168,8 @@ const ConditionGroup = memo(({
                       ? `1px dashed ${borderColor}`
                       : 'none',
                     marginLeft: !isRoot ? '6px' : 0,
+                    overflowX: 'auto',
+                    maxWidth: '100%',
                   }}
                 >
                   <AnimatePresence mode="popLayout">
